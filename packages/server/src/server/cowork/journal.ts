@@ -53,6 +53,9 @@ function bind(record: JournalRecord): void {
 }
 
 export async function openJournal(home: string): Promise<void> {
+  if (homeDir && homeDir !== home) {
+    throw new Error(`cowork journal already open for a different daemon home`);
+  }
   homeDir = home;
   records.clear();
   const raw = await readFile(journalFile(home), "utf8").catch(() => "");

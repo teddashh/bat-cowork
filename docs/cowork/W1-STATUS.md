@@ -1,6 +1,8 @@
 # W1 status
 
-Not accepted as a Tauri session. The shell still does not compile (`pkg-config` / `glib-sys`, see `apps/bat-desktop/BUILD.md`). The desktop UI is not attached to a daemon.
+Not accepted as a Tauri session. The shell still does not compile (`pkg-config` / `glib-sys`, see `apps/bat-desktop/BUILD.md`).
+
+The browser shell can attach read-only. See `docs/cowork/DESKTOP-READ.md`. A managed task is restored from `{paseoHome}/cowork/tasks.json` on daemon start. See `docs/cowork/W2-STATUS.md`.
 
 ## What is true now
 
@@ -22,4 +24,4 @@ Not accepted as a Tauri session. The shell still does not compile (`pkg-config` 
 
 ## Still closed
 
-No Tauri window, no desktop connection, no provider process, no production VM. A managed task is an in-memory register call, not a row the daemon restores.
+No Tauri window, no provider process, no production VM. The git panel does not get commit history from the daemon.

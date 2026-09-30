@@ -44,7 +44,8 @@ export function syncManagedAgent(
     clearManagedWriteTarget("agent", agentId);
     return;
   }
-  registerManagedWriteTarget("agent", agentId, fields);
+  const existing = agents.get(agentId);
+  agents.set(agentId, { ...fields, dispatched: existing?.dispatched ?? new Set() });
 }
 
 export function authorizeCoworkWrite(input: {

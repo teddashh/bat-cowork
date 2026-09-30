@@ -342,9 +342,9 @@ function buildHost(): BatAppAPI {
       moveToWindow: () => unsupportedCapability('workspace.moveToWindow'),
       // Null so the first render can mount. This shell has no detached window.
       getDetachedId: () => null,
-      onDetached: () => unsupportedCapability('workspace.onDetached'),
-      onReattached: () => unsupportedCapability('workspace.onReattached'),
-      onReload: () => unsupportedCapability('workspace.onReload'),
+      onDetached: () => () => {},
+      onReattached: () => () => {},
+      onReload: () => () => {},
     },
     system: {
       onResume: (cb: () => void) => {
@@ -391,8 +391,8 @@ function buildHost(): BatAppAPI {
       getWindowProfile: () => unsupportedCapability('app.getWindowProfile'),
       setTitle: (title: string) => invokeLocal<void>('app_set_title', { title }),
       resolveProfileWindowClose: () => unsupportedCapability('app.resolveProfileWindowClose'),
-      onProfileWindowCloseRequested: () => unsupportedCapability('app.onProfileWindowCloseRequested'),
-      onStatsRequested: () => unsupportedCapability('app.onStatsRequested'),
+      onProfileWindowCloseRequested: () => () => {},
+      onStatsRequested: () => () => {},
       newWindow: () => unsupportedCapability('app.newWindow'),
       takeFreshWindowFlag: () => unsupportedCapability('app.takeFreshWindowFlag'),
       focusNextWindow: () => unsupportedCapability('app.focusNextWindow'),
@@ -417,9 +417,9 @@ function buildHost(): BatAppAPI {
       uploadToDir: () => unsupportedCapability('fs.uploadToDir'),
       downloadFile: () => unsupportedCapability('fs.downloadFile'),
       writeFile: () => unsupportedCapability('fs.writeFile'),
-      watch: () => unsupportedCapability('fs.watch'),
-      unwatch: () => unsupportedCapability('fs.unwatch'),
-      onChanged: () => unsupportedCapability('fs.onChanged'),
+      watch: async () => {},
+      unwatch: async () => {},
+      onChanged: () => () => {},
     },
     git: {
       getGithubUrl: (folderPath: string) => reads().gitGithubUrl(folderPath),

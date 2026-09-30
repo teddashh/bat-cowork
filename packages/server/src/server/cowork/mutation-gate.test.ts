@@ -4,6 +4,7 @@ import {
   authorizeCoworkWrite,
   clearManagedWriteTarget,
   registerManagedWriteTarget,
+  syncManagedAgent,
 } from "./mutation-gate.js";
 
 const open = {
@@ -55,6 +56,21 @@ test("a managed agent denies a stale revision, the wrong writer, a held dispatch
     authorizeCoworkWrite({ kind: "agent", id: "agent-1", actor: "client-a", commandId: "m1" }),
   ).toEqual({ allow: false, error: "cowork gate: duplicate" });
   clearManagedWriteTarget("agent", "agent-1");
+});
+
+test("sync keeps a command id that was already dispatched", () => {
+  syncManagedAgent("agent-2", open);
+  expect(
+    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" }).allow,
+  ).toBe(true);
+  syncManagedAgent("agent-2", { ...open, revision: 2, expectedRevision: 2 });
+  expect(
+    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" }),
+  ).toEqual({ allow: false, error: "cowork gate: duplicate" });
+  syncManagedAgent("agent-2", null);
+  expect(
+    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" }).allow,
+  ).toBe(true);
 });
 
 test("send and create go through the gate in Session", () => {

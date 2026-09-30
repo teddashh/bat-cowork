@@ -210,25 +210,41 @@ root.style.display = ''
 
 dlog(`[startup] before createRoot: +${Date.now() - t0}ms`)
 
-// LatencyStatsPanel sits beside <App /> rather than inside it: App returns early
-// in four different shapes (profile startup, detached window, missing workspace,
-// normal), and the Statistics menu item can fire while any of them is on screen.
-// It renders null until the menu event arrives, so it costs one listener.
-ReactDOM.createRoot(root).render(
-  <RootErrorBoundary>
-    <App />
-    <LatencyStatsPanel />
-  </RootErrorBoundary>
-)
+async function mount(): Promise<void> {
+  const daemon = new URLSearchParams(window.location.search).get('daemon')
+  if (daemon) {
+    try {
+      const { connectDaemonWorkspace } = await import('./hosts/daemon-workspace-connect')
+      await connectDaemonWorkspace(daemon)
+      dlog(`[startup] daemon read port connected: ${daemon}`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      root.textContent = `daemon read port failed: ${message}`
+      if (splash) splash.remove()
+      return
+    }
+  }
 
-dlog(`[startup] after render() queued: +${Date.now() - t0}ms`)
+  // LatencyStatsPanel sits beside <App /> rather than inside it: App returns early
+  // in four different shapes (profile startup, detached window, missing workspace,
+  // normal), and the Statistics menu item can fire while any of them is on screen.
+  // It renders null until the menu event arrives, so it costs one listener.
+  ReactDOM.createRoot(root).render(
+    <RootErrorBoundary>
+      <App />
+      <LatencyStatsPanel />
+    </RootErrorBoundary>
+  )
 
-// Remove splash only after React has committed to DOM and browser is ready to paint.
-// Using double-rAF: first rAF fires before paint, second fires after paint is
-// actually flushed — ensures React content is visible before we remove splash.
-requestAnimationFrame(() => {
+  dlog(`[startup] after render() queued: +${Date.now() - t0}ms`)
+
+  // Remove splash only after React has committed to DOM and browser is ready to paint.
   requestAnimationFrame(() => {
-    if (splash) splash.remove()
-    dlog(`[startup] splash removed (React painted): +${Date.now() - t0}ms from HTML`)
+    requestAnimationFrame(() => {
+      if (splash) splash.remove()
+      dlog(`[startup] splash removed (React painted): +${Date.now() - t0}ms from HTML`)
+    })
   })
-})
+}
+
+void mount()

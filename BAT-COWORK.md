@@ -25,5 +25,6 @@ W0 inventory is on `main`. W1 is not a Tauri session. W2 is one task on a local 
 - A paused task is stored in `{paseoHome}/cowork/tasks.json`. Stopping the daemon and starting another on the same home restores it. A new client still cannot send.
 - After the driver releases the pause, one fake-claude turn runs and commits. The verifier accepts only because HEAD moved and the worktree is clean.
 - Daemon `start` loads that journal through the bundled reducer. See `docs/cowork/W2-STATUS.md`.
+- The desktop shell can attach read-only with `?daemon=ws://127.0.0.1:PORT/ws`. That path lists workspaces, files, and a diff from the daemon. It is not a Tauri window. See `docs/cowork/DESKTOP-READ.md`.
 
-Not done: a Tauri window, a desktop connection, Claude/Codex/Grok admission, a cold start of a built daemon restoring the task. Do not point this tree at a running production daemon or an existing BAT session.
+Not done: a Tauri window, Claude/Codex/Grok admission, commit history in the git panel. Do not point this tree at a running production daemon or an existing BAT session.
