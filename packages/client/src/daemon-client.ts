@@ -4256,6 +4256,41 @@ export class DaemonClient {
     return payload.tasks;
   }
 
+  async appendCoworkTask(
+    input: {
+      taskId: string;
+      eventId: string;
+      action:
+        | { type: "comment"; text: string }
+        | { type: "proposal"; text: string }
+        | { type: "control"; control: "pause" | "takeover" | "cancel" | "release" };
+    },
+    requestId?: string,
+  ): Promise<{
+    task: {
+      id: string;
+      phase: string;
+      revision: number;
+      driverId: string;
+      holdDispatch: boolean;
+      evidenceCommit: string | null;
+      receipts: { id: string; kind: string; failed: boolean }[];
+      timeline: { eventId: string; kind: string; actor: string; text: string }[];
+    } | null;
+    duplicate: boolean;
+    error: string | null;
+  }> {
+    return this.sendNamespacedCorrelatedSessionRequest<"cowork.tasks.append.response">({
+      requestId,
+      message: {
+        type: "cowork.tasks.append.request",
+        taskId: input.taskId,
+        eventId: input.eventId,
+        action: input.action,
+      },
+    });
+  }
+
   async getCommitFileDiff(
     cwd: string,
     sha: string,

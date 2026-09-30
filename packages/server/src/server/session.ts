@@ -1,6 +1,7 @@
 import { searchTimeline } from "./agent/chat-search/index.js";
 import { authorizeCoworkWrite } from "./cowork/mutation-gate.js";
-import { listTasks } from "./cowork/journal.js";
+import { applyTask, listTasks, readTask } from "./cowork/journal.js";
+import type { TaskEvent } from "./cowork/reducer.js";
 import type { BrowserToolsBroker } from "./browser-tools/broker.js";
 import { BrowserAutomationHostCapabilitySchema } from "@getpaseo/protocol/browser-automation/capabilities";
 import type {
@@ -2314,12 +2315,63 @@ export class Session {
   }
 
   private dispatchCoworkMessage(msg: SessionInboundMessage): Promise<void> | undefined {
-    if (msg.type !== "cowork.tasks.list.request") return undefined;
-    this.emit({
-      type: "cowork.tasks.list.response",
-      payload: { requestId: msg.requestId, tasks: listTasks() },
+    if (msg.type === "cowork.tasks.list.request") {
+      this.emit({
+        type: "cowork.tasks.list.response",
+        payload: { requestId: msg.requestId, tasks: listTasks() },
+      });
+      return Promise.resolve();
+    }
+    if (msg.type === "cowork.tasks.append.request") return this.appendCoworkTask(msg);
+    return undefined;
+  }
+
+  private async appendCoworkTask(
+    msg: Extract<SessionInboundMessage, { type: "cowork.tasks.append.request" }>,
+  ): Promise<void> {
+    const reply = (payload: {
+      task: ReturnType<typeof listTasks>[number] | null;
+      duplicate: boolean;
+      error: string | null;
+    }) => {
+      this.emit({
+        type: "cowork.tasks.append.response",
+        payload: { requestId: msg.requestId, ...payload },
+      });
+    };
+    const record = readTask(msg.taskId);
+    if (!record) {
+      reply({ task: null, duplicate: false, error: "task not found" });
+      return;
+    }
+    if (record.state.appliedEventIds.includes(msg.eventId)) {
+      reply({
+        task: listTasks().find((task) => task.id === msg.taskId) ?? null,
+        duplicate: true,
+        error: null,
+      });
+      return;
+    }
+    const actor = this.clientId;
+    const event: TaskEvent =
+      msg.action.type === "control"
+        ? { id: msg.eventId, type: "control", action: msg.action.control, actor }
+        : { id: msg.eventId, type: msg.action.type, actor, text: msg.action.text };
+    try {
+      await applyTask(msg.taskId, event);
+    } catch (error) {
+      reply({
+        task: listTasks().find((task) => task.id === msg.taskId) ?? null,
+        duplicate: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return;
+    }
+    reply({
+      task: listTasks().find((task) => task.id === msg.taskId) ?? null,
+      duplicate: false,
+      error: null,
     });
-    return Promise.resolve();
   }
 
   private dispatchWorkspaceLifecycleMessage(msg: SessionInboundMessage): Promise<void> | undefined {

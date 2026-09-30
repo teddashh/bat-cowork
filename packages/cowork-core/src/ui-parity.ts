@@ -18,6 +18,16 @@ export const UI_PARITY: readonly ParityRow[] = [
     status: "wired",
     evidence: "DaemonWorkspaceReadPort gitLog uses checkout.commits.list",
   },
+  {
+    surface: "task-comment",
+    status: "wired",
+    evidence: "cowork.tasks.append stamps actor from the session client id",
+  },
+  {
+    surface: "task-instruction",
+    status: "missing",
+    evidence: "append does not accept instruction; nothing consumes the dispatch intent",
+  },
   { surface: "claude-provider", status: "not-admitted", evidence: "assertProviderAdmitted('claude')" },
   { surface: "codex-provider", status: "not-admitted", evidence: "assertProviderAdmitted('codex')" },
   { surface: "grok-provider", status: "not-admitted", evidence: "assertProviderAdmitted('grok')" },

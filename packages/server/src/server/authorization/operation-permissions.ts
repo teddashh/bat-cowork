@@ -214,6 +214,7 @@ const INBOUND_PERMISSION = {
   "workspace.setup.run.request": "workspace.write",
   write_project_config_request: "workspace.write",
   "cowork.tasks.list.request": "workspace.read",
+  "cowork.tasks.append.request": "workspace.write",
 } as const satisfies Record<InboundOperation, PermissionRequirement>;
 
 const OUTBOUND_PERMISSION = {
@@ -442,6 +443,7 @@ const OUTBOUND_PERMISSION = {
   workspace_update: ["workspace.read", "hub.execute"],
   write_project_config_response: "workspace.write",
   "cowork.tasks.list.response": "workspace.read",
+  "cowork.tasks.append.response": "workspace.write",
 } as const satisfies Record<OutboundOperation, PermissionRequirement>;
 
 export function requiredPermissionForInbound(operation: InboundOperation): PermissionRequirement {

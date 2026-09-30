@@ -3163,9 +3163,48 @@ export const SubscriptionReleaseResponseSchema = z.object({
   payload: z.object({ requestId: z.string(), subscriptionId: z.string() }),
 });
 
+export const CoworkTaskSnapshotSchema = z.object({
+  id: z.string(),
+  phase: z.string(),
+  revision: z.number(),
+  driverId: z.string(),
+  holdDispatch: z.boolean(),
+  evidenceCommit: z.string().nullable(),
+  receipts: z.array(
+    z.object({
+      id: z.string(),
+      kind: z.string(),
+      failed: z.boolean(),
+    }),
+  ),
+  timeline: z.array(
+    z.object({
+      eventId: z.string(),
+      kind: z.string(),
+      actor: z.string(),
+      text: z.string(),
+    }),
+  ),
+});
+
 export const CoworkTasksListRequestSchema = z.object({
   type: z.literal("cowork.tasks.list.request"),
   requestId: z.string(),
+});
+
+export const CoworkTasksAppendRequestSchema = z.object({
+  type: z.literal("cowork.tasks.append.request"),
+  requestId: z.string(),
+  taskId: z.string().min(1),
+  eventId: z.string().min(1),
+  action: z.discriminatedUnion("type", [
+    z.object({ type: z.literal("comment"), text: z.string().min(1) }),
+    z.object({ type: z.literal("proposal"), text: z.string().min(1) }),
+    z.object({
+      type: z.literal("control"),
+      control: z.enum(["pause", "takeover", "cancel", "release"]),
+    }),
+  ]),
 });
 
 export const SessionInboundMessageSchema = z.discriminatedUnion("type", [
@@ -3377,6 +3416,7 @@ export const SessionInboundMessageSchema = z.discriminatedUnion("type", [
   LoopLogsRequestSchema,
   LoopStopRequestSchema,
   CoworkTasksListRequestSchema,
+  CoworkTasksAppendRequestSchema,
 ]);
 
 export type SessionInboundMessage = z.infer<typeof SessionInboundMessageSchema>;
@@ -6775,31 +6815,17 @@ export const CoworkTasksListResponseSchema = z.object({
   type: z.literal("cowork.tasks.list.response"),
   payload: z.object({
     requestId: z.string(),
-    tasks: z.array(
-      z.object({
-        id: z.string(),
-        phase: z.string(),
-        revision: z.number(),
-        driverId: z.string(),
-        holdDispatch: z.boolean(),
-        evidenceCommit: z.string().nullable(),
-        receipts: z.array(
-          z.object({
-            id: z.string(),
-            kind: z.string(),
-            failed: z.boolean(),
-          }),
-        ),
-        timeline: z.array(
-          z.object({
-            eventId: z.string(),
-            kind: z.string(),
-            actor: z.string(),
-            text: z.string(),
-          }),
-        ),
-      }),
-    ),
+    tasks: z.array(CoworkTaskSnapshotSchema),
+  }),
+});
+
+export const CoworkTasksAppendResponseSchema = z.object({
+  type: z.literal("cowork.tasks.append.response"),
+  payload: z.object({
+    requestId: z.string(),
+    task: CoworkTaskSnapshotSchema.nullable(),
+    duplicate: z.boolean(),
+    error: z.string().nullable(),
   }),
 });
 
@@ -7029,6 +7055,7 @@ export const SessionOutboundMessageSchema = z.discriminatedUnion("type", [
   DaemonUpdateProgressMessageSchema,
   DaemonUpdateResponseSchema,
   CoworkTasksListResponseSchema,
+  CoworkTasksAppendResponseSchema,
 ]);
 
 export type SessionOutboundMessage = z.infer<typeof SessionOutboundMessageSchema>;
