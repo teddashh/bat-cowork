@@ -25,7 +25,7 @@ W0 is the only accepted package. W3 has local evidence. W1, W2, W4, W5, and W6 a
 This round proved, on a local test daemon:
 
 - W1: a second client still sees the session, the file, and the diff after the first client closes. Tauri still does not compile.
-- W2: two clients see the same agent. The same message id does not start a second turn. Codex is not admitted.
+- W2: two clients see the same agent, its permission request, and its reply. The same message id does not start a second turn. A worktree created by the daemon receives the commit. The main checkout does not move. Codex is not admitted.
 - W4: two worktrees, a viewer cannot pause or instruct, and takeover holds send until the writer settles. Grok is not admitted. Hermes and Grokbot are not running.
 - W5: files, diff, and sessions are wired. The terminal is refused. Git log is missing. Two hundred comments reload without verifying the task.
 - W6: an old `{ tasks }` wrapper migrates, and putting the journal file back rolls a later comment out. Cutover stays closed.

@@ -6,7 +6,7 @@ Not a release. No signing key is in this repo. No staging host is contacted. Cut
 | --- | --- | --- |
 | W0 | accepted | `docs/cowork/W0-REPORT.md` |
 | W1 | not accepted | `w1-session.e2e.test.ts` shows sessions, files, and that closing the client leaves the daemon up. Tauri does not compile. |
-| W2 | not accepted | `w2-same-run.e2e.test.ts` is two local clients and one fake provider. Same message id is not run twice. Official Codex is not admitted. |
+| W2 | not accepted | `w2-same-run.e2e.test.ts` and `w2-stream.e2e.test.ts`. Two local clients see one run, the permission, and the reply. The same message id does not run twice. A daemon-created worktree receives the commit and the main checkout does not move. Official Codex is not admitted. |
 | W3 | local evidence | `task-w3.e2e.test.ts` |
 | W4 | not accepted | `w4-control.e2e.test.ts` is two principals and two worktrees. Hermes and Grokbot are not running. |
 | W5 | not accepted | `ui-parity.ts` and `w5-history.test.ts`. Claude and Codex are not admitted. |
