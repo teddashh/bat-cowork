@@ -1,0 +1,45 @@
+{
+  "product": "bat-cowork",
+  "lockedAt": "2026-09-29",
+  "note": "Analysis baseline. Not a build lockfile and not a claim that the snapshot is production-ready.",
+  "upstreams": {
+    "paseo": {
+      "remote": "https://github.com/getpaseo/paseo",
+      "commit": "53ee9cd9930d9479af318c1ed29713a0bfb5f47b",
+      "role": "primary fork; server, client, protocol, CLI stay on upstream paths",
+      "license": "Apache-2.0 plus third-party notices in the upstream tree",
+      "packageVersionAtLock": "0.10.0"
+    },
+    "better-agent-terminal": {
+      "remote": "https://github.com/tony1223/better-agent-terminal",
+      "commit": "41ea2b1e9142c9383d4b7813d754cb4a03dd0ace",
+      "role": "UI and Tauri shell source. Not imported in W0.",
+      "license": "MIT",
+      "hostApiBlob": "2dd7e9ea02947f21947165610c41c47367a94b22"
+    },
+    "bat-agent-connector": {
+      "remote": "https://github.com/teddashh/bat-agent-connector",
+      "commit": "71337aa5133fc04bf332d3da15e819c16585c7a3",
+      "role": "behavior reference only. The Python task daemon is not a runtime dependency.",
+      "license": "MIT"
+    }
+  },
+  "transport": {
+    "clientPackage": "@getpaseo/client",
+    "clientVersion": "0.10.0",
+    "publicEntryHasTransportFactory": false,
+    "internalEntry": "@getpaseo/client/internal/daemon-client",
+    "webSocketFactories": [
+      "packages/client/src/daemon-client-websocket-transport.ts#defaultWebSocketFactory",
+      "packages/client/src/daemon-client-websocket-transport.ts#nativeWebSocketFactory"
+    ],
+    "rule": "One wrapper may import the internal transport factory. UI components may not."
+  },
+  "notPresent": [
+    "BAT renderer import",
+    "CoworkMutationGate implementation",
+    "task journal",
+    "Antigravity agent adapter",
+    "admitted provider dispatch"
+  ]
+}
