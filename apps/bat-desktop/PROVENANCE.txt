@@ -1,0 +1,3 @@
+Imported from tony1223/better-agent-terminal 41ea2b1e9142c9383d4b7813d754cb4a03dd0ace.
+MIT. See BAT-LICENSE. Copyright (c) 2024 TonyQ.
+node-sidecar, Claude/Codex SDKs, agent binaries, and the original updater were not imported.

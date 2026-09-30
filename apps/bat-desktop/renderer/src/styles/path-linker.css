@@ -1,0 +1,259 @@
+/* Path Links (clickable file paths in terminal/agent output) */
+.path-link {
+  color: #e0a870;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.path-link:hover {
+  color: #f5c28a;
+  text-decoration-style: solid;
+}
+
+.url-link {
+  color: #6cb6ff;
+}
+.url-link:hover {
+  color: #8ecaff;
+}
+
+/* File Preview Modal (opened from path links) */
+.path-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.path-preview-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 70vw;
+  max-width: 900px;
+  height: 70vh;
+  max-height: 700px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.path-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.path-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.path-preview-path {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+.path-preview-path:hover {
+  color: var(--text-primary);
+}
+
+.path-preview-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.path-preview-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+/* A remote download is chunked and can take a moment; the button stays
+   disabled for the duration so a second click can't open a second save
+   dialog on top of the first. */
+.path-preview-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.path-preview-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.path-preview-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Search bar */
+.path-preview-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+.path-preview-search-input {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+}
+.path-preview-search-input:focus {
+  border-color: var(--accent-color);
+}
+.path-preview-search-count {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: center;
+}
+.path-preview-search-nav {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+}
+.path-preview-search-nav:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.path-preview-search-nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Search match highlights */
+mark.search-highlight {
+  background: rgba(255, 200, 0, 0.25);
+  color: inherit;
+  border-radius: 2px;
+}
+mark.search-highlight.current {
+  background: rgba(255, 200, 0, 0.6);
+  outline: 1px solid rgba(255, 200, 0, 0.8);
+}
+
+.path-preview-body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.path-preview-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.path-preview-text {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-family: monospace;
+  line-height: 1.5;
+  white-space: pre;
+  color: var(--text-primary);
+  tab-size: 2;
+}
+.path-preview-text code,
+.file-preview-text code {
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+}
+/* Override highlight.js background to blend with our dark theme */
+.path-preview-text code.hljs,
+.file-preview-text code.hljs {
+  background: transparent;
+  padding: 0;
+}
+
+/* Highlighted code with line numbers */
+.hlcode-wrapper {
+  overflow: auto;
+}
+.hlcode-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  font-family: 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.hlcode-ln {
+  width: 3em;
+  min-width: 3em;
+  max-width: 3em;
+  white-space: nowrap;
+  padding: 0 12px 0 8px;
+  text-align: right;
+  color: var(--text-secondary);
+  opacity: 0.4;
+  user-select: none;
+  vertical-align: top;
+  border-right: 1px solid var(--border-color);
+}
+.hlcode-line {
+  padding: 0 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-primary);
+}
+
+.path-preview-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  height: 100%;
+}
+
+.path-preview-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}

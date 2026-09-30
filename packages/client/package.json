@@ -24,6 +24,10 @@
     "./internal/daemon-client-websocket-transport": {
       "types": "./dist/daemon-client-websocket-transport.d.ts",
       "default": "./dist/daemon-client-websocket-transport.js"
+    },
+    "./cowork": {
+      "types": "./dist/cowork/index.d.ts",
+      "default": "./dist/cowork/index.js"
     }
   },
   "publishConfig": {

@@ -1,0 +1,19 @@
+{
+  "identifier": "default",
+  "description": "Local window, dialog, clipboard, and opener only. No updater and no agent commands.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "opener:default",
+    "allow-app-set-title",
+    "allow-dialog-confirm",
+    "allow-dialog-select-folder",
+    "allow-dialog-select-files",
+    "allow-dialog-select-images",
+    "allow-clipboard-write-text",
+    "allow-shell-open-external",
+    "allow-shell-open-path",
+    "allow-shell-reveal-path"
+  ]
+}

@@ -20,9 +20,10 @@ above that commit. Do not merge the BAT host back in.
 
 ## Status
 
-W0 is in progress on `main`: source inventory, ungated ingress list, and a
-closed provider admission list. See [docs/cowork/W0-REPORT.md](docs/cowork/W0-REPORT.md).
+W0 inventory is on `main`. W1 is started, not accepted:
 
-Not done: Tauri client, read-only connection, mutation gate, task journal,
-multi-user control, release. Do not point this tree at a running production
-daemon or an existing BAT session.
+- BAT renderer is imported under `apps/bat-desktop`. The new Tauri id is `dev.teddashh.bat-cowork`. Cargo did not compile (`pkg-config` / glib missing). See `apps/bat-desktop/BUILD.md`.
+- `@getpaseo/client/cowork` is a read-only facade plus a native transport wrapper. No daemon was connected.
+- `packages/cowork-core` has an in-memory reducer. It is not wired into Paseo `Session`. No provider is admitted.
+
+Not done: a window that stays up, a live read-only daemon connection, the mutation gate on real ingress, multi-user control, release. Do not point this tree at a running production daemon or an existing BAT session.

@@ -1,3 +1,4 @@
+export { evaluateDispatch, type DispatchCheck, type DispatchDecision } from "./dispatch-policy.ts";
 export {
   BAT_HOST_NAMESPACES,
   hostNamespace,
@@ -20,3 +21,16 @@ export {
   type IngressLane,
   type SessionIngress,
 } from "./session-ingress.ts";
+export {
+  claimWriter,
+  createTask,
+  dispatchAllowed,
+  step,
+  type Evidence,
+  type Intent,
+  type Liveness,
+  type Phase,
+  type StepResult,
+  type TaskEvent,
+  type TaskState,
+} from "./task-core.ts";
