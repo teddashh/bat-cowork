@@ -247,6 +247,11 @@ function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instructi
 }
 
 function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }>): StepResult {
+  if (event.action === "pause" || event.action === "cancel") {
+    if (event.actor !== state.driverId) {
+      return { state: note(state, event.id, "control.rejected", event.actor, event.action), intents: [] };
+    }
+  }
   if (event.action === "pause") {
     return {
       state: withLiveness(

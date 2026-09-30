@@ -181,6 +181,24 @@ test("presence and lease expiry do not take the writer; takeover holds dispatch 
   assert.equal(released.state.writerId, "hermes-a");
 });
 
+test("a viewer cannot pause or cancel, and takeover is how the other principal holds dispatch", () => {
+  const started = step(base(), {
+    id: "i1",
+    type: "instruction",
+    actor: "hermes-a",
+    role: "driver",
+    text: "fix",
+  }).state;
+  const paused = step(started, { id: "p", type: "control", action: "pause", actor: "ted" });
+  assert.equal(paused.state.phase, "active");
+  assert.equal(paused.state.holdDispatch, false);
+  const cancelled = step(started, { id: "c", type: "control", action: "cancel", actor: "ted" });
+  assert.equal(cancelled.state.phase, "active");
+  const taken = step(started, { id: "t", type: "control", action: "takeover", actor: "ted" });
+  assert.equal(taken.state.holdDispatch, true);
+  assert.equal(taken.state.controlEpoch, 2);
+});
+
 test("the driver can release their own pause without a takeover settle", () => {
   const instructed = step(base(), {
     id: "i1",

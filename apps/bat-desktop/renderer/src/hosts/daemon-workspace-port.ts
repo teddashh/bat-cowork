@@ -37,6 +37,13 @@ export interface DaemonDiffFile {
   hunks?: readonly { lines?: readonly { content?: string }[] }[]
 }
 
+export interface DaemonSessionEntry {
+  id: string
+  cwd?: string
+  provider?: string
+  title?: string | null
+}
+
 export interface DaemonWorkspaceSource {
   fetchWorkspaces(): Promise<{ entries: readonly DaemonWorkspaceEntry[] }>
   listDirectory(cwd: string, path: string): Promise<{ entries: readonly DaemonDirectoryEntry[] }>
@@ -51,6 +58,7 @@ export interface DaemonWorkspaceSource {
     repoRoot?: string | null
     remoteUrl?: string | null
   }>
+  fetchAgents(): Promise<{ entries: readonly { agent: DaemonSessionEntry }[] }>
 }
 
 function unsupported(method: string): Promise<never> {
@@ -104,6 +112,16 @@ export class DaemonWorkspaceReadPort implements WorkspaceReadPort {
   async listWorkspaces(): Promise<string | null> {
     const listed = await this.source.fetchWorkspaces()
     return serializeDaemonWorkspaces(listed.entries)
+  }
+
+  async listSessions(): Promise<DaemonSessionEntry[]> {
+    const listed = await this.source.fetchAgents()
+    return listed.entries.map((entry) => ({
+      id: entry.agent.id,
+      cwd: entry.agent.cwd,
+      provider: entry.agent.provider,
+      title: entry.agent.title ?? null,
+    }))
   }
 
   async listFiles(dirPath: string): Promise<WorkspaceFileEntry[]> {

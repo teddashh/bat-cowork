@@ -423,6 +423,11 @@ function instruct(state, event) {
   };
 }
 function control(state, event) {
+  if (event.action === "pause" || event.action === "cancel") {
+    if (event.actor !== state.driverId) {
+      return { state: note(state, event.id, "control.rejected", event.actor, event.action), intents: [] };
+    }
+  }
   if (event.action === "pause") {
     return {
       state: withLiveness(
@@ -593,10 +598,27 @@ function managedWriteFields(state) {
     holdDispatch: state.holdDispatch
   };
 }
+
+// packages/cowork-core/src/ui-parity.ts
+var UI_PARITY = [
+  { surface: "files", status: "wired", evidence: "DaemonWorkspaceReadPort listFiles and readFile" },
+  { surface: "diff", status: "wired", evidence: "DaemonWorkspaceReadPort gitDiff and gitStatus" },
+  { surface: "sessions", status: "wired", evidence: "DaemonWorkspaceReadPort listSessions" },
+  { surface: "terminal", status: "refused", evidence: "pty.create, pty.write, and pty.kill throw" },
+  {
+    surface: "git-log",
+    status: "missing",
+    evidence: "gitLog returns an empty array; checkout status has no commit list"
+  },
+  { surface: "claude-provider", status: "not-admitted", evidence: "assertProviderAdmitted('claude')" },
+  { surface: "codex-provider", status: "not-admitted", evidence: "assertProviderAdmitted('codex')" },
+  { surface: "grok-provider", status: "not-admitted", evidence: "assertProviderAdmitted('grok')" }
+];
 export {
   BAT_HOST_NAMESPACES,
   PROVIDERS,
   SESSION_INGRESS,
+  UI_PARITY,
   assertIngressGated,
   assertProviderAdmitted,
   claimWriter,

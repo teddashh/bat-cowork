@@ -52,6 +52,15 @@ function bind(record: JournalRecord): void {
   syncManagedAgent(record.agentId, managedWriteFields(record.state));
 }
 
+function parseJournal(raw: string): JournalRecord[] {
+  const parsed = JSON.parse(raw) as unknown;
+  if (Array.isArray(parsed)) return parsed as JournalRecord[];
+  if (parsed && typeof parsed === "object" && Array.isArray((parsed as { tasks?: unknown }).tasks)) {
+    return (parsed as { tasks: JournalRecord[] }).tasks;
+  }
+  throw new Error("cowork journal: unrecognized shape");
+}
+
 export async function openJournal(home: string): Promise<void> {
   if (homeDir && homeDir !== home) {
     throw new Error(`cowork journal already open for a different daemon home`);
@@ -60,8 +69,11 @@ export async function openJournal(home: string): Promise<void> {
   records.clear();
   const raw = await readFile(journalFile(home), "utf8").catch(() => "");
   if (!raw) return;
-  const parsed = JSON.parse(raw) as JournalRecord[];
+  const parsed = parseJournal(raw);
   for (const record of parsed) {
+    if (!record.baselineCommit) {
+      record.baselineCommit = await git(record.cwd, ["rev-parse", "HEAD"]);
+    }
     records.set(record.state.id, record);
     const command = record.state.activeCommand;
     if (command?.outcome === "inflight") {

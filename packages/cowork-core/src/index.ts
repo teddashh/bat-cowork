@@ -35,3 +35,4 @@ export {
   type TaskEvent,
   type TaskState,
 } from "./task-core.ts";
+export { UI_PARITY, type ParityRow, type ParityStatus } from "./ui-parity.ts";
