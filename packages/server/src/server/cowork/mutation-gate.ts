@@ -1,9 +1,8 @@
 // Write gate for targets this process has marked as cowork-managed.
 // Unregistered agents and workspaces stay on the stock Paseo path.
-// Deny rules match packages/cowork-core evaluateDispatch: revision, epoch,
-// writer, and a command id that was already dispatched.
-// The task reducer is not running inside Session. Nothing registers a target
-// until a caller does, so this does not by itself stop ordinary sends.
+// syncManagedAgent is the product registration. It copies fields from the
+// task reducer (managedWriteFields). A paused task holds dispatch. A terminal
+// task clears the registration. Deny rules match evaluateDispatch.
 
 export interface ManagedWriteTarget {
   writerId: string;
@@ -37,6 +36,17 @@ export function clearManagedWriteTarget(kind: "agent" | "workspace", id: string)
   mapFor(kind).delete(id);
 }
 
+export function syncManagedAgent(
+  agentId: string,
+  fields: ManagedWriteTarget | null,
+): void {
+  if (!fields) {
+    clearManagedWriteTarget("agent", agentId);
+    return;
+  }
+  registerManagedWriteTarget("agent", agentId, fields);
+}
+
 export function authorizeCoworkWrite(input: {
   kind: "agent" | "workspace";
   id: string;
@@ -51,7 +61,10 @@ export function authorizeCoworkWrite(input: {
   if (target.epoch !== target.expectedEpoch) {
     return { allow: false, error: "cowork gate: epoch" };
   }
-  if (target.holdDispatch || target.writerId !== input.actor) {
+  if (target.holdDispatch) {
+    return { allow: false, error: "cowork gate: held" };
+  }
+  if (target.writerId !== input.actor) {
     return { allow: false, error: "cowork gate: writer" };
   }
   if (target.dispatched.has(input.commandId)) {

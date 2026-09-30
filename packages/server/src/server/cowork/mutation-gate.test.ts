@@ -40,7 +40,7 @@ test("a managed agent denies a stale revision, the wrong writer, a held dispatch
   registerManagedWriteTarget("agent", "agent-1", { ...open, holdDispatch: true });
   expect(
     authorizeCoworkWrite({ kind: "agent", id: "agent-1", actor: "client-a", commandId: "m1" }),
-  ).toEqual({ allow: false, error: "cowork gate: writer" });
+  ).toEqual({ allow: false, error: "cowork gate: held" });
 
   registerManagedWriteTarget("agent", "agent-1", { ...open, epoch: 2, expectedEpoch: 1 });
   expect(

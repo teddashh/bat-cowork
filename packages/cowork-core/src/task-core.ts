@@ -374,3 +374,25 @@ export function dispatchAllowed(state: TaskState, actor: string, commandId: stri
     alreadyDispatched: state.activeCommand?.id === commandId && state.activeCommand.outcome === "inflight",
   });
 }
+
+export function managedWriteFields(state: TaskState): {
+  writerId: string;
+  revision: number;
+  expectedRevision: number;
+  epoch: number;
+  expectedEpoch: number;
+  holdDispatch: boolean;
+} | null {
+  if (state.writerId === null) return null;
+  if (state.phase === "verified" || state.phase === "cancelled" || state.phase === "rejected") {
+    return null;
+  }
+  return {
+    writerId: state.writerId,
+    revision: state.revision,
+    expectedRevision: state.revision,
+    epoch: state.controlEpoch,
+    expectedEpoch: state.controlEpoch,
+    holdDispatch: state.holdDispatch,
+  };
+}

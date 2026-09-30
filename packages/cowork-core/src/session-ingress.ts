@@ -1,10 +1,11 @@
 // Inbound Session cases at paseo 53ee9cd9930d9479af318c1ed29713a0bfb5f47b.
 // Source file: packages/server/src/server/session.ts (switch lines 2300-3200).
-// gate stays not-wired until CoworkMutationGate actually wraps that ingress.
+// gate is managed-only when Session calls authorizeCoworkWrite for that case.
+// Unregistered agents still take the stock path. Every other case stays not-wired.
 
 export type IngressLane = "session" | "subscribe" | "voice" | "hub";
 export type IngressEffect = "read" | "write";
-export type GateStatus = "not-wired";
+export type GateStatus = "not-wired" | "managed-only";
 
 export interface SessionIngress {
   type: string;
@@ -55,9 +56,9 @@ export const SESSION_INGRESS: readonly SessionIngress[] = [
   { type: 'update_agent_request', lane: 'session', effect: 'write', gate: "not-wired" },
   { type: 'project.rename.request', lane: 'session', effect: 'write', gate: "not-wired" },
   { type: 'project.icon.set.request', lane: 'session', effect: 'write', gate: "not-wired" },
-  { type: 'send_agent_message_request', lane: 'session', effect: 'write', gate: "not-wired" },
+  { type: 'send_agent_message_request', lane: 'session', effect: 'write', gate: "managed-only" },
   { type: 'wait_for_finish_request', lane: 'session', effect: 'read', gate: "not-wired" },
-  { type: 'create_agent_request', lane: 'session', effect: 'write', gate: "not-wired" },
+  { type: 'create_agent_request', lane: 'session', effect: 'write', gate: "managed-only" },
   { type: 'resume_agent_request', lane: 'session', effect: 'write', gate: "not-wired" },
   { type: 'import_agent_request', lane: 'session', effect: 'write', gate: "not-wired" },
   { type: 'refresh_agent_request', lane: 'session', effect: 'write', gate: "not-wired" },
@@ -182,9 +183,10 @@ export function ingressByType(type: string): SessionIngress | undefined {
   return SESSION_INGRESS.find((row) => row.type === type);
 }
 
-/** Stock Paseo sends are not cowork instructions until the gate exists. */
-export function assertIngressGated(type: string): never {
+/** Stock Paseo sends are not cowork instructions unless that ingress is managed-only. */
+export function assertIngressGated(type: string): void {
   const row = ingressByType(type);
+  if (row?.gate === "managed-only") return;
   const label = row ? `${row.lane}/${row.effect}` : "unclassified";
   throw new Error(
     `CoworkMutationGate is not wired for ${type} (${label}). ` +

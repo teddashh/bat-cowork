@@ -24,6 +24,6 @@ W0 inventory is on `main`. W1 is not accepted:
 
 - The imported App can subscribe to PTY events without starting a process. PTY writes still throw.
 - A Node read-only view listed a workspace, a file, and a diff on a local test daemon. The Tauri window is not connected, and `cargo check` still fails.
-- `send_agent_message_request` and `create_agent_request` call `authorizeCoworkWrite`. Unregistered traffic is unchanged. No provider is admitted.
+- `send_agent_message_request` and `create_agent_request` call the cowork gate. A paused task blocks send on a real `Session` and does not start a run. An unregistered agent still sends. The allowed path in the test stops at a stub and does not start a provider.
 
 Not done: a running Tauri client, a desktop connection, a managed task on the daemon, multi-user control, release. Do not point this tree at a running production daemon or an existing BAT session.

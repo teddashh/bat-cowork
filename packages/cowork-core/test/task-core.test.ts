@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { evaluateDispatch } from "../src/dispatch-policy.ts";
 import { SESSION_INGRESS } from "../src/session-ingress.ts";
-import { claimWriter, createTask, step, type TaskState } from "../src/task-core.ts";
+import { claimWriter, createTask, managedWriteFields, step, type TaskState } from "../src/task-core.ts";
 
 function base() {
   return createTask({ id: "t1", driverId: "hermes-a", worktreeId: "wt-a" });
@@ -177,5 +177,25 @@ test("one worktree has one writer, and dispatch policy denies a stale write", ()
     }).allow,
     false,
   );
-  assert.equal(SESSION_INGRESS.every((row) => row.gate === "not-wired"), true);
+  assert.equal(
+    SESSION_INGRESS.filter((row) => row.gate === "managed-only").map((row) => row.type).sort().join(","),
+    "create_agent_request,send_agent_message_request",
+  );
+});
+
+test("a paused task holds the write target and a terminal task releases it", () => {
+  const instructed = step(base(), {
+    id: "i1",
+    type: "instruction",
+    actor: "hermes-a",
+    role: "driver",
+    text: "fix",
+  }).state;
+  const open = managedWriteFields(instructed);
+  assert.equal(open?.holdDispatch, false);
+  assert.equal(open?.writerId, "hermes-a");
+  const paused = step(instructed, { id: "p", type: "control", action: "pause", actor: "hermes-a" }).state;
+  assert.equal(managedWriteFields(paused)?.holdDispatch, true);
+  const cancelled = step(paused, { id: "x", type: "control", action: "cancel", actor: "hermes-a" }).state;
+  assert.equal(managedWriteFields(cancelled), null);
 });

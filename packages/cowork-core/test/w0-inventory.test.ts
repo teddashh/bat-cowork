@@ -23,18 +23,21 @@ function sessionCases(source: string): string[] {
   return found;
 }
 
-test("session ingress matches the locked Session switch and no write is gated yet", () => {
+test("session ingress matches the locked Session switch", () => {
   const source = readFileSync(SESSION_FILE, "utf8");
   const fromSource = sessionCases(source);
   const fromTable = SESSION_INGRESS.map((row) => row.type);
   assert.deepEqual(fromTable, fromSource);
   assert.equal(SESSION_INGRESS.length, 162);
+  const managed = SESSION_INGRESS.filter((row) => row.gate === "managed-only").map((row) => row.type);
+  assert.deepEqual(managed.sort(), ["create_agent_request", "send_agent_message_request"]);
   for (const row of SESSION_INGRESS) {
-    assert.equal(row.gate, "not-wired");
+    if (row.gate !== "managed-only") assert.equal(row.gate, "not-wired");
   }
   const send = SESSION_INGRESS.find((row) => row.type === "send_agent_message_request");
   assert.equal(send?.effect, "write");
-  assert.throws(() => assertIngressGated("send_agent_message_request"), /not wired/);
+  assertIngressGated("send_agent_message_request");
+  assert.throws(() => assertIngressGated("checkout_commit_request"), /not wired/);
 });
 
 test("BAT host map keeps the namespaces that must not survive as a second owner", () => {
