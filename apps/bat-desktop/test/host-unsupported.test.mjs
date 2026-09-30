@@ -7,6 +7,7 @@ import {
   DROPPED_HOST_METHODS,
   DROPPED_HOST_NAMESPACES,
   UNSUPPORTED_CAPABILITY,
+  callDroppedHost,
   unsupportedCapability,
 } from '../renderer/src/hosts/unsupported-capabilities.mjs'
 
@@ -46,6 +47,17 @@ test('unsupported list names the dropped capabilities', () => {
   for (const name of ['workerBuffer.startProcess', 'workerBuffer.stopProcess', 'git.commit', 'workspace.save']) {
     assert.ok(DROPPED_HOST_METHODS.includes(name), name)
   }
+})
+
+test('pty listeners mount without delivering a process, and pty writes still throw', () => {
+  const unsubscribe = callDroppedHost('pty', 'onOutput')
+  assert.equal(typeof unsubscribe, 'function')
+  unsubscribe()
+  assert.equal(typeof callDroppedHost('pty', 'onExit'), 'function')
+  assert.throws(() => callDroppedHost('pty', 'create'), /UNSUPPORTED_CAPABILITY/)
+  assert.throws(() => callDroppedHost('pty', 'write'), /UNSUPPORTED_CAPABILITY/)
+  assert.throws(() => callDroppedHost('pty', 'kill'), /UNSUPPORTED_CAPABILITY/)
+  assert.match(hostApi, /callDroppedHost\(namespace, key\)/)
 })
 
 test('unsupportedCapability throws UNSUPPORTED_CAPABILITY and does not resolve', () => {

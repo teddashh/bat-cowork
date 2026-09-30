@@ -1,4 +1,5 @@
 import { searchTimeline } from "./agent/chat-search/index.js";
+import { authorizeCoworkWrite } from "./cowork/mutation-gate.js";
 import type { BrowserToolsBroker } from "./browser-tools/broker.js";
 import { BrowserAutomationHostCapabilitySchema } from "@getpaseo/protocol/browser-automation/capabilities";
 import type {
@@ -4159,6 +4160,15 @@ export class Session {
 
   private async handleCreateAgentRequest(msg: CreateAgentRequestMessage): Promise<void> {
     try {
+      if (msg.workspaceId) {
+        const gated = authorizeCoworkWrite({
+          kind: "workspace",
+          id: msg.workspaceId,
+          actor: this.clientId,
+          commandId: msg.requestId,
+        });
+        if (!gated.allow) throw new SessionRequestError("cowork_gate", gated.error);
+      }
       let agent: AgentSnapshotPayload;
       if (msg.idempotencyKey !== undefined) {
         if (msg.initialPrompt !== undefined) {
@@ -8071,6 +8081,24 @@ export class Session {
 
     try {
       const agentId = resolved.agentId;
+      const gated = authorizeCoworkWrite({
+        kind: "agent",
+        id: agentId,
+        actor: this.clientId,
+        commandId: msg.messageId ?? msg.requestId,
+      });
+      if (!gated.allow) {
+        this.emit({
+          type: "send_agent_message_response",
+          payload: {
+            requestId: msg.requestId,
+            agentId: msg.agentId,
+            accepted: false,
+            error: gated.error,
+          },
+        });
+        return;
+      }
 
       const prompt = buildAgentPrompt(msg.text, msg.images, msg.attachments);
       this.sessionLogger.trace(

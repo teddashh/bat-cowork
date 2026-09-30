@@ -20,10 +20,10 @@ above that commit. Do not merge the BAT host back in.
 
 ## Status
 
-W0 inventory is on `main`. W1 is started, not accepted:
+W0 inventory is on `main`. W1 is not accepted:
 
-- BAT renderer is imported under `apps/bat-desktop`. The new Tauri id is `dev.teddashh.bat-cowork`. Cargo did not compile (`pkg-config` / glib missing). See `apps/bat-desktop/BUILD.md`.
-- `@getpaseo/client/cowork` is a read-only facade plus a native transport wrapper. No daemon was connected.
-- `packages/cowork-core` has an in-memory reducer. It is not wired into Paseo `Session`. No provider is admitted.
+- The imported App can subscribe to PTY events without starting a process. PTY writes still throw.
+- A Node read-only view listed a workspace, a file, and a diff on a local test daemon. The Tauri window is not connected, and `cargo check` still fails.
+- `send_agent_message_request` and `create_agent_request` call `authorizeCoworkWrite`. Unregistered traffic is unchanged. No provider is admitted.
 
-Not done: a window that stays up, a live read-only daemon connection, the mutation gate on real ingress, multi-user control, release. Do not point this tree at a running production daemon or an existing BAT session.
+Not done: a running Tauri client, a desktop connection, a managed task on the daemon, multi-user control, release. Do not point this tree at a running production daemon or an existing BAT session.

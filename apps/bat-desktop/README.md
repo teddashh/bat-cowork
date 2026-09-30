@@ -34,9 +34,9 @@ Also thrown: pty create/write/kill/restart and every other pty method, worktree 
 
 Workspace reads (list workspaces, files, git status, git diff, and the other read methods on the port) reject until something calls `setWorkspaceReadPort`. Nothing in this tree does that.
 
-## Startup gap
+## Startup
 
-The imported `App` still calls `host.pty.onOutput` while mounting. That throws `UNSUPPORTED_CAPABILITY`, so the window does not finish profile/workspace init. `workspace.load()` would also reject, because no daemon is connected. This milestone does not paper over those calls.
+`host.pty.onOutput` and other `on*` listeners return an unsubscribe function and deliver no data. That lets the imported `App` mount. `pty.create`, `pty.write`, and `pty.kill` still throw `UNSUPPORTED_CAPABILITY`. No terminal is started. `workspace.load()` still rejects until a read port is connected. No daemon was attached from this UI.
 
 CSP is set in `src-tauri/tauri.conf.json` and is not null. It allows the Vite dev server on `127.0.0.1:5173` (HMR on `5174`) and loopback `ws:` / `wss:` for a local daemon. It does not allow an arbitrary remote daemon host, and no daemon URL was configured.
 

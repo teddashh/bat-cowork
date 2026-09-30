@@ -50,6 +50,18 @@ export function isDroppedHostNamespace(name) {
   return DROPPED_HOST_NAMESPACES.includes(name)
 }
 
+export function isHostListener(method) {
+  return typeof method === 'string' && /^on[A-Z]/.test(method)
+}
+
+// Listeners return an unsubscribe function and deliver nothing.
+// They do not start a PTY or an agent. Every other dropped call throws.
+export function callDroppedHost(namespace, method) {
+  const name = `${namespace}.${method}`
+  if (isHostListener(method)) return () => {}
+  unsupportedCapability(name)
+}
+
 export function unsupportedCapability(name) {
   const label = typeof name === 'string' && name ? name : 'unknown'
   throw new Error(

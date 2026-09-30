@@ -13,6 +13,7 @@
 import { dispatchTauriNativeDrop } from './utils/tauri-native-drop'
 import {
   DROPPED_HOST_NAMESPACES,
+  callDroppedHost,
   unsupportedCapability,
 } from './hosts/unsupported-capabilities.mjs'
 import { getWorkspaceReadPort } from './hosts/workspace-read-port'
@@ -164,7 +165,7 @@ function droppedNamespace(namespace: string): unknown {
     get(_target, prop) {
       if (prop === 'then' || typeof prop === 'symbol') return undefined
       const key = String(prop)
-      return () => unsupportedCapability(`${namespace}.${key}`)
+      return (..._args: unknown[]) => callDroppedHost(namespace, key)
     },
   })
 }

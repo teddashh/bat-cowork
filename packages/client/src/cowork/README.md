@@ -1,6 +1,6 @@
 # Cowork read-only client boundary
 
-Not W1 acceptance. No live daemon was connected. Nothing here was run against a Paseo daemon, a Tauri shell, or a production host.
+Not a Tauri session. `createDaemonReadView` was used by `packages/server/src/server/cowork/read-only-connection.e2e.test.ts` against a local test daemon: it listed a workspace, listed a file, and fetched an uncommitted diff. The desktop UI does not call this yet.
 
 ## What is in this folder
 
@@ -11,6 +11,8 @@ Not W1 acceptance. No live daemon was connected. Nothing here was run against a 
    Public `createPaseoClient` / `PaseoClientConfig` do not accept `transportFactory`. The field is `DaemonClientConfig.transportFactory` on `@getpaseo/client/internal/daemon-client`. This wrapper only returns that factory. It does not construct a `DaemonClient` and it does not open a socket on its own.
 
 2. `createReadOnlyPaseoClient` is a facade over public read methods. `assertReadOnly` throws when a method token is one of `send`, `create`, `cancel`, `write`, `commit`, `merge`, `push`.
+
+3. `createDaemonReadView` forwards `fetchWorkspaces`, `fetchAgents`, `listDirectory`, `readFile`, `getCheckoutStatus`, and `getCheckoutDiff`. It does not expose `createWorkspace` or `sendAgentMessage`.
 
 The caller keeps the `PaseoClient` for `connect` / `close`. This facade does not connect.
 
