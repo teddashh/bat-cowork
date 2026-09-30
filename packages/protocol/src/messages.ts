@@ -3163,6 +3163,11 @@ export const SubscriptionReleaseResponseSchema = z.object({
   payload: z.object({ requestId: z.string(), subscriptionId: z.string() }),
 });
 
+export const CoworkTasksListRequestSchema = z.object({
+  type: z.literal("cowork.tasks.list.request"),
+  requestId: z.string(),
+});
+
 export const SessionInboundMessageSchema = z.discriminatedUnion("type", [
   BrowserHostRegisterRequestSchema,
   SubscriptionReleaseRequestSchema,
@@ -3371,6 +3376,7 @@ export const SessionInboundMessageSchema = z.discriminatedUnion("type", [
   LoopInspectRequestSchema,
   LoopLogsRequestSchema,
   LoopStopRequestSchema,
+  CoworkTasksListRequestSchema,
 ]);
 
 export type SessionInboundMessage = z.infer<typeof SessionInboundMessageSchema>;
@@ -6765,6 +6771,38 @@ export const AgentSkillsImportLegacySelectionResponseSchema = z.object({
   }),
 });
 
+export const CoworkTasksListResponseSchema = z.object({
+  type: z.literal("cowork.tasks.list.response"),
+  payload: z.object({
+    requestId: z.string(),
+    tasks: z.array(
+      z.object({
+        id: z.string(),
+        phase: z.string(),
+        revision: z.number(),
+        driverId: z.string(),
+        holdDispatch: z.boolean(),
+        evidenceCommit: z.string().nullable(),
+        receipts: z.array(
+          z.object({
+            id: z.string(),
+            kind: z.string(),
+            failed: z.boolean(),
+          }),
+        ),
+        timeline: z.array(
+          z.object({
+            eventId: z.string(),
+            kind: z.string(),
+            actor: z.string(),
+            text: z.string(),
+          }),
+        ),
+      }),
+    ),
+  }),
+});
+
 export const SessionOutboundMessageSchema = z.discriminatedUnion("type", [
   BrowserHostRegisterResponseSchema,
   SubscriptionReleaseResponseSchema,
@@ -6990,6 +7028,7 @@ export const SessionOutboundMessageSchema = z.discriminatedUnion("type", [
   LoopStopResponseSchema,
   DaemonUpdateProgressMessageSchema,
   DaemonUpdateResponseSchema,
+  CoworkTasksListResponseSchema,
 ]);
 
 export type SessionOutboundMessage = z.infer<typeof SessionOutboundMessageSchema>;

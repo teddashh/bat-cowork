@@ -76,6 +76,17 @@ export interface WorkspaceReadPort {
   gitGithubUrl(folderPath: string): Promise<string | null>
   /** Agent-tied worktree status. Read-only. Not a create/remove/merge. */
   worktreeStatus(sessionId: string): Promise<unknown>
+  listSessions(): Promise<{ id: string; cwd?: string; provider?: string; title?: string | null }[]>
+  listTasks(): Promise<{
+    id: string
+    phase: string
+    revision: number
+    driverId: string
+    holdDispatch: boolean
+    evidenceCommit: string | null
+    receipts: { id: string; kind: string; failed: boolean }[]
+    timeline: { eventId: string; kind: string; actor: string; text: string }[]
+  }[]>
 }
 
 function disconnected(method: string): Promise<never> {
@@ -152,6 +163,23 @@ export class DisconnectedWorkspaceReadPort implements WorkspaceReadPort {
 
   worktreeStatus(): Promise<unknown> {
     return disconnected('worktreeStatus')
+  }
+
+  listSessions(): Promise<{ id: string; cwd?: string; provider?: string; title?: string | null }[]> {
+    return Promise.resolve([])
+  }
+
+  listTasks(): Promise<{
+    id: string
+    phase: string
+    revision: number
+    driverId: string
+    holdDispatch: boolean
+    evidenceCommit: string | null
+    receipts: { id: string; kind: string; failed: boolean }[]
+    timeline: { eventId: string; kind: string; actor: string; text: string }[]
+  }[]> {
+    return Promise.resolve([])
   }
 }
 

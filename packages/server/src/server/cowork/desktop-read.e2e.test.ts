@@ -61,7 +61,8 @@ test("the desktop read port lists a daemon workspace, a file, and a diff", async
     expect(status.some((entry) => entry.file.endsWith("README.md"))).toBe(true);
     expect(await port.gitBranch(repoDir)).toBe("main");
     expect(await port.gitRoot(repoDir)).toBe(repoDir);
-    expect(await port.gitLog(repoDir)).toEqual([]);
+    const log = await port.gitLog(repoDir);
+    expect(log.some((entry) => entry.message === "initial" && entry.hash.length > 0)).toBe(true);
 
     await expect(port.home()).rejects.toThrow(/DAEMON_READ_UNSUPPORTED/);
     expect("createWorkspace" in port).toBe(false);

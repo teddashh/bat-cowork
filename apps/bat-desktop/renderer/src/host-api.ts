@@ -435,6 +435,10 @@ function buildHost(): BatAppAPI {
       checkout: () => unsupportedCapability('git.checkout'),
       merge: () => unsupportedCapability('git.merge'),
     },
+    cowork: {
+      sessions: () => reads().listSessions(),
+      tasks: () => reads().listTasks(),
+    },
     worktree: {
       status: (sessionId: string) => reads().worktreeStatus(sessionId),
       create: () => unsupportedCapability('worktree.create'),

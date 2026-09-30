@@ -1,5 +1,6 @@
 import { searchTimeline } from "./agent/chat-search/index.js";
 import { authorizeCoworkWrite } from "./cowork/mutation-gate.js";
+import { listTasks } from "./cowork/journal.js";
 import type { BrowserToolsBroker } from "./browser-tools/broker.js";
 import { BrowserAutomationHostCapabilitySchema } from "@getpaseo/protocol/browser-automation/capabilities";
 import type {
@@ -2307,8 +2308,18 @@ export class Session {
       this.dispatchPluginMessage(msg) ??
       this.dispatchTerminalMessage(msg) ??
       this.dispatchScheduleMessage(msg) ??
+      this.dispatchCoworkMessage(msg) ??
       this.dispatchMiscMessage(msg);
     if (promise) await promise;
+  }
+
+  private dispatchCoworkMessage(msg: SessionInboundMessage): Promise<void> | undefined {
+    if (msg.type !== "cowork.tasks.list.request") return undefined;
+    this.emit({
+      type: "cowork.tasks.list.response",
+      payload: { requestId: msg.requestId, tasks: listTasks() },
+    });
+    return Promise.resolve();
   }
 
   private dispatchWorkspaceLifecycleMessage(msg: SessionInboundMessage): Promise<void> | undefined {

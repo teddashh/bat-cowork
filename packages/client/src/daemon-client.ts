@@ -4235,6 +4235,27 @@ export class DaemonClient {
     return { baseRef: payload.baseRef, commits: payload.commits };
   }
 
+  async listCoworkTasks(requestId?: string): Promise<
+    {
+      id: string;
+      phase: string;
+      revision: number;
+      driverId: string;
+      holdDispatch: boolean;
+      evidenceCommit: string | null;
+      receipts: { id: string; kind: string; failed: boolean }[];
+      timeline: { eventId: string; kind: string; actor: string; text: string }[];
+    }[]
+  > {
+    const payload = await this.sendNamespacedCorrelatedSessionRequest<"cowork.tasks.list.response">(
+      {
+        requestId,
+        message: { type: "cowork.tasks.list.request" },
+      },
+    );
+    return payload.tasks;
+  }
+
   async getCommitFileDiff(
     cwd: string,
     sha: string,

@@ -129,6 +129,37 @@ export function readTask(id: string): JournalRecord | undefined {
   return records.get(id);
 }
 
+export function listTasks(): {
+  id: string;
+  phase: string;
+  revision: number;
+  driverId: string;
+  holdDispatch: boolean;
+  evidenceCommit: string | null;
+  receipts: { id: string; kind: string; failed: boolean }[];
+  timeline: { eventId: string; kind: string; actor: string; text: string }[];
+}[] {
+  return [...records.values()].map((record) => ({
+    id: record.state.id,
+    phase: record.state.phase,
+    revision: record.state.revision,
+    driverId: record.state.driverId,
+    holdDispatch: record.state.holdDispatch,
+    evidenceCommit: record.state.evidence?.commit ?? null,
+    receipts: record.state.outbox.map((item) => ({
+      id: item.id,
+      kind: item.kind,
+      failed: item.failed,
+    })),
+    timeline: record.state.timeline.map((entry) => ({
+      eventId: entry.eventId,
+      kind: entry.kind,
+      actor: entry.actor,
+      text: entry.text,
+    })),
+  }));
+}
+
 export async function verifyTask(id: string): Promise<StepResult> {
   const record = records.get(id);
   if (!record) throw new Error(`cowork task not found: ${id}`);

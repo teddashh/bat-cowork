@@ -9,7 +9,7 @@ Not a release. No signing key is in this repo. No staging host is contacted. Cut
 | W2 | not accepted | `w2-same-run.e2e.test.ts` and `w2-stream.e2e.test.ts`. Two local clients see one run, the permission, and the reply. The same message id does not run twice. A daemon-created worktree receives the commit and the main checkout does not move. Official Codex is not admitted. |
 | W3 | local evidence | `task-w3.e2e.test.ts` |
 | W4 | not accepted | `w4-control.e2e.test.ts` is two principals and two worktrees. Hermes and Grokbot are not running. |
-| W5 | not accepted | `ui-parity.ts` and `w5-history.test.ts`. Claude and Codex are not admitted. |
+| W5 | not accepted | `ui-parity.ts`, `w5-history.test.ts`, and `cowork-tasks.e2e.test.ts`. Commit history, task receipts, and the task timeline are readable. Claude and Codex are not admitted. The terminal stays refused. |
 | W6 | not accepted | this file. `w6-journal.test.ts` migrates an old wrapper and restores a snapshot. |
 
 A package marked `not accepted` is not cleared for cutover.

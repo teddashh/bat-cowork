@@ -9,7 +9,7 @@ test("parity names the wired reads and does not admit a provider", () => {
   assert.equal(bySurface.get("diff"), "wired");
   assert.equal(bySurface.get("sessions"), "wired");
   assert.equal(bySurface.get("terminal"), "refused");
-  assert.equal(bySurface.get("git-log"), "missing");
+  assert.equal(bySurface.get("git-log"), "wired");
   for (const id of ["claude", "codex", "grok"]) {
     assert.equal(bySurface.get(`${id}-provider`), "not-admitted");
     assert.throws(() => assertProviderAdmitted(id), /not admitted/);

@@ -15,8 +15,8 @@ export const UI_PARITY: readonly ParityRow[] = [
   { surface: "terminal", status: "refused", evidence: "pty.create, pty.write, and pty.kill throw" },
   {
     surface: "git-log",
-    status: "missing",
-    evidence: "gitLog returns an empty array; checkout status has no commit list",
+    status: "wired",
+    evidence: "DaemonWorkspaceReadPort gitLog uses checkout.commits.list",
   },
   { surface: "claude-provider", status: "not-admitted", evidence: "assertProviderAdmitted('claude')" },
   { surface: "codex-provider", status: "not-admitted", evidence: "assertProviderAdmitted('codex')" },

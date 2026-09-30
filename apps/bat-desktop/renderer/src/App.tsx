@@ -6,6 +6,7 @@ import { workspaceStore } from './stores/workspace-store'
 import { settingsStore } from './stores/settings-store'
 import { Sidebar } from './components/Sidebar'
 import { UpdateBanner } from './components/UpdateBanner'
+import { CoworkStatus } from './components/CoworkStatus'
 import { RemoteConnectionBanner } from './components/RemoteConnectionBanner'
 import { startAutoUpdate } from './lib/auto-update'
 import { startRuntimeAutoInstall } from './lib/runtime-auto-install'
@@ -1283,6 +1284,7 @@ export default function App() {
   return (
     <div className="app">
       <UpdateBanner />
+      <CoworkStatus />
       <RemoteConnectionBanner
         visible={activeProfileIsRemote && remoteEverConnected && !remoteClientConnected}
         hostName={activeProfileName}

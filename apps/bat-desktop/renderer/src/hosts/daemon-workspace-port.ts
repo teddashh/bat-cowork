@@ -44,6 +44,17 @@ export interface DaemonSessionEntry {
   title?: string | null
 }
 
+export interface CoworkTaskSnapshot {
+  id: string
+  phase: string
+  revision: number
+  driverId: string
+  holdDispatch: boolean
+  evidenceCommit: string | null
+  receipts: { id: string; kind: string; failed: boolean }[]
+  timeline: { eventId: string; kind: string; actor: string; text: string }[]
+}
+
 export interface DaemonWorkspaceSource {
   fetchWorkspaces(): Promise<{ entries: readonly DaemonWorkspaceEntry[] }>
   listDirectory(cwd: string, path: string): Promise<{ entries: readonly DaemonDirectoryEntry[] }>
@@ -59,6 +70,10 @@ export interface DaemonWorkspaceSource {
     remoteUrl?: string | null
   }>
   fetchAgents(): Promise<{ entries: readonly { agent: DaemonSessionEntry }[] }>
+  listCheckoutCommits(cwd: string): Promise<{
+    commits: readonly { sha: string; authorName: string; authorDate: string; subject: string }[]
+  }>
+  listCoworkTasks(): Promise<CoworkTaskSnapshot[]>
 }
 
 function unsupported(method: string): Promise<never> {
@@ -122,6 +137,10 @@ export class DaemonWorkspaceReadPort implements WorkspaceReadPort {
       provider: entry.agent.provider,
       title: entry.agent.title ?? null,
     }))
+  }
+
+  listTasks(): Promise<CoworkTaskSnapshot[]> {
+    return this.source.listCoworkTasks()
   }
 
   async listFiles(dirPath: string): Promise<WorkspaceFileEntry[]> {
@@ -189,11 +208,19 @@ export class DaemonWorkspaceReadPort implements WorkspaceReadPort {
     return status.remoteUrl ?? null
   }
 
-  // Checkout status has no commit list. GitPanel's load rejects the whole
-  // panel if this throws, which would also hide the status and diff we can
-  // read. An empty array means history was not fetched.
-  gitLog(): Promise<GitLogEntry[]> {
-    return Promise.resolve([])
+  async gitLog(cwd: string, count?: number): Promise<GitLogEntry[]> {
+    try {
+      const listed = await this.source.listCheckoutCommits(cwd)
+      const limit = count ?? listed.commits.length
+      return listed.commits.slice(0, limit).map((commit) => ({
+        hash: commit.sha,
+        author: commit.authorName,
+        date: commit.authorDate,
+        message: commit.subject,
+      }))
+    } catch {
+      return []
+    }
   }
 
   listDirs(): Promise<DirListing> {
