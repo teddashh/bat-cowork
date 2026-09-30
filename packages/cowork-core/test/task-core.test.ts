@@ -94,8 +94,52 @@ test("unknown command is reconciled and not resent", () => {
   const commandId = started.intents[0]?.type === "dispatch" ? started.intents[0].commandId : "";
   const unknown = step(started.state, { id: "u1", type: "command.unknown", commandId });
   assert.equal(unknown.state.activeCommand?.outcome, "unknown");
+  assert.equal(unknown.state.holdDispatch, true);
   assert.equal(unknown.intents.some((intent) => intent.type === "dispatch"), false);
   assert.equal(unknown.state.liveness.kind, "blocker");
+  const stranger = step(unknown.state, { id: "rel-x", type: "control", action: "release", actor: "ted" });
+  assert.equal(stranger.state.holdDispatch, true);
+  const acked = step(unknown.state, { id: "rel-d", type: "control", action: "release", actor: "hermes-a" });
+  assert.equal(acked.state.holdDispatch, false);
+  assert.equal(acked.intents.some((intent) => intent.type === "dispatch"), false);
+});
+
+test("a verified task can take another instruction, and the old commit does not close it", () => {
+  let state = step(base(), {
+    id: "i1",
+    type: "instruction",
+    actor: "hermes-a",
+    role: "driver",
+    text: "first",
+  }).state;
+  state = step(state, {
+    id: "v1",
+    type: "verify.passed",
+    evidence: { revision: 1, commit: "aaa" },
+  }).state;
+  assert.equal(state.phase, "verified");
+  const appended = step(state, {
+    id: "i2",
+    type: "instruction",
+    actor: "hermes-a",
+    role: "driver",
+    text: "second",
+  });
+  assert.equal(appended.state.phase, "active");
+  assert.equal(appended.state.revision, 2);
+  assert.equal(appended.intents[0]?.type, "dispatch");
+  const stale = step(appended.state, {
+    id: "v2",
+    type: "verify.passed",
+    evidence: { revision: 2, commit: "aaa" },
+  });
+  assert.equal(stale.state.phase, "active");
+  const closed = step(appended.state, {
+    id: "v3",
+    type: "verify.passed",
+    evidence: { revision: 2, commit: "bbb" },
+  });
+  assert.equal(closed.state.phase, "verified");
 });
 
 test("missing liveness is repaired with an unassigned blocker", () => {

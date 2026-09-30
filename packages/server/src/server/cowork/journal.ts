@@ -63,8 +63,18 @@ export async function openJournal(home: string): Promise<void> {
   const parsed = JSON.parse(raw) as JournalRecord[];
   for (const record of parsed) {
     records.set(record.state.id, record);
+    const command = record.state.activeCommand;
+    if (command?.outcome === "inflight") {
+      const result = step(record.state, {
+        id: `restart-unknown-${command.id}`,
+        type: "command.unknown",
+        commandId: command.id,
+      });
+      record.state = result.state;
+    }
     bind(record);
   }
+  await persist();
 }
 
 export async function openTask(input: {
@@ -112,7 +122,8 @@ export async function verifyTask(id: string): Promise<StepResult> {
   if (!record) throw new Error(`cowork task not found: ${id}`);
   const head = await git(record.cwd, ["rev-parse", "HEAD"]);
   const porcelain = await git(record.cwd, ["status", "--porcelain"]);
-  const advanced = head !== record.baselineCommit && porcelain.length === 0;
+  const floor = record.state.evidence?.commit ?? record.baselineCommit;
+  const advanced = head !== floor && porcelain.length === 0;
   if (!advanced) {
     return applyTask(id, { id: `verify-fail-${randomUUID()}`, type: "verify.failed" });
   }

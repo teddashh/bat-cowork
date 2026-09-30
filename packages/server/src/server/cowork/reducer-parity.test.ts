@@ -11,6 +11,8 @@ test("the bundled reducer matches cowork-core for pause, release, and verify", (
     { id: "p", type: "control" as const, action: "pause" as const, actor: "driver" },
     { id: "r0", type: "control" as const, action: "release" as const, actor: "other" },
     { id: "r1", type: "control" as const, action: "release" as const, actor: "driver" },
+    { id: "u", type: "command.unknown" as const, commandId: "cmd:i" },
+    { id: "r2", type: "control" as const, action: "release" as const, actor: "driver" },
     { id: "vf", type: "verify.failed" as const },
   ];
   for (const event of events) {

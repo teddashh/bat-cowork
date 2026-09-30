@@ -130,6 +130,13 @@ test("a paused task survives the client, then one turn and a real commit can ver
       action: "release",
       actor: "client-a",
     });
+    await applyTask("task-1", {
+      id: "instr-2",
+      type: "instruction",
+      actor: "client-a",
+      role: "driver",
+      text: "change the readme after the restart",
+    });
     const third = new DaemonClient({
       url: `ws://127.0.0.1:${daemon.port}/ws`,
       appVersion: "0.1.82",

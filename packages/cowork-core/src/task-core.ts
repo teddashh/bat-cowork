@@ -176,7 +176,11 @@ function reduce(state: TaskState, event: TaskEvent): StepResult {
       return {
         state: withLiveness(
           note(
-            { ...state, activeCommand: { id: event.commandId, outcome: "unknown" } },
+            {
+              ...state,
+              holdDispatch: true,
+              activeCommand: { id: event.commandId, outcome: "unknown" },
+            },
             event.id,
             "command.unknown",
             "system",
@@ -215,7 +219,8 @@ function reduce(state: TaskState, event: TaskEvent): StepResult {
 }
 
 function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instruction" }>): StepResult {
-  const allowed = event.role === "driver" && event.actor === state.driverId && !TERMINAL.has(state.phase);
+  const sealed = state.phase === "cancelled" || state.phase === "rejected";
+  const allowed = event.role === "driver" && event.actor === state.driverId && !sealed;
   if (!allowed) {
     return { state: note(state, event.id, "instruction.rejected", event.actor, event.text), intents: [] };
   }
@@ -223,6 +228,7 @@ function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instructi
   const commandId = commandIdFor(event.id);
   const next: TaskState = {
     ...note(state, event.id, "instruction", event.actor, event.text),
+    phase: state.phase === "verified" ? "active" : state.phase,
     revision,
     pendingInput: { revision, text: event.text },
     reworkAttempts: 0,
@@ -290,6 +296,24 @@ function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }
       intents: [],
     };
   }
+  if (state.activeCommand?.outcome === "unknown") {
+    if (event.actor !== state.driverId) {
+      return { state: note(state, event.id, "release.rejected", event.actor, "not the driver"), intents: [] };
+    }
+    return {
+      state: withLiveness(
+        note(
+          { ...state, holdDispatch: false },
+          event.id,
+          "release",
+          event.actor,
+          "unknown command acknowledged",
+        ),
+        { kind: "wake", nextWakeAt: "after-release" },
+      ),
+      intents: [],
+    };
+  }
   const settled = state.writerSettledEpoch === state.controlEpoch;
   if (!settled) {
     return { state: note(state, event.id, "release.rejected", event.actor, "writer not settled"), intents: [] };
@@ -338,7 +362,9 @@ function failVerify(state: TaskState, eventId: string): StepResult {
 }
 
 function passVerify(state: TaskState, event: Extract<TaskEvent, { type: "verify.passed" }>): StepResult {
-  const matches = event.evidence.revision === state.revision && event.evidence.commit.length > 0;
+  const sameCommit = state.evidence?.commit === event.evidence.commit;
+  const matches =
+    event.evidence.revision === state.revision && event.evidence.commit.length > 0 && !sameCommit;
   const unknown = state.activeCommand?.outcome === "unknown";
   if (!matches || unknown || state.holdDispatch || TERMINAL.has(state.phase)) {
     return { state: note(state, event.id, "verify.rejected", "verifier", "evidence does not close"), intents: [] };

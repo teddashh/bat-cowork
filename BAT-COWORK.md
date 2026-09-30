@@ -20,11 +20,10 @@ above that commit. Do not merge the BAT host back in.
 
 ## Status
 
-W0 inventory is on `main`. W1 is not a Tauri session. W2 is one task on a local test daemon, not an admitted provider:
+W0 inventory is on `main`. W1 and W2 are not accepted. W3's local checks are in `docs/cowork/W3-STATUS.md`.
 
-- A paused task is stored in `{paseoHome}/cowork/tasks.json`. Stopping the daemon and starting another on the same home restores it. A new client still cannot send.
-- After the driver releases the pause, one fake-claude turn runs and commits. The daemon marks the task verified when that turn completes. The test does not call the verifier.
-- Daemon `start` loads that journal through the bundled reducer. See `docs/cowork/W2-STATUS.md`.
-- The desktop shell can attach read-only with `?daemon=ws://127.0.0.1:PORT/ws`. That path lists workspaces, files, and a diff from the daemon. It is not a Tauri window. See `docs/cowork/DESKTOP-READ.md`.
+- W1 is a browser read of workspace, files, and diff. It is not a Tauri session and not a remote server. See `docs/cowork/DESKTOP-READ.md`.
+- W2 is not accepted. There is no official Codex run, and a second client does not watch the same run. The mutation gate and one fake-claude turn are only a slice. See `docs/cowork/W2-STATUS.md`.
+- W3: a restarted daemon holds an in-flight command instead of leaving it running. A turn that does not commit is reworked. A later instruction is not closed by the old commit.
 
-Not done: a Tauri window, Claude/Codex/Grok admission, commit history in the git panel. Do not point this tree at a running production daemon or an existing BAT session.
+Not done: W1, W2, W4, W5, W6. Do not point this tree at a running production daemon or an existing BAT session.
