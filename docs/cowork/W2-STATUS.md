@@ -1,0 +1,28 @@
+# W2 status
+
+One task on a local test daemon. Not a Tauri session, and not an admitted Claude, Codex, or Grok provider.
+
+## What the test did
+
+`packages/server/src/server/cowork/task-loop.e2e.test.ts` passed once.
+
+| Step | Result |
+| --- | --- |
+| Daemon | `createTestPaseoDaemon` with the in-process fake `claude` client. No provider binary. |
+| Workspace | A real git repo, opened as a directory workspace. |
+| Agent | `createAgent({ provider: "claude", model: "test-model" })` on that fake client. |
+| Journal | `openTask` writes `{paseoHome}/cowork/tasks.json` and registers the agent on the gate. |
+| Early verify | Rejected. HEAD had not moved. |
+| Pause | `sendAgentMessage` throws `cowork gate: held`. The fake turn does not start. |
+| Client gone | The socket is closed, the gate map is cleared, and the in-memory journal is dropped. `openJournal` reads the file. A second client, with a different id, is still held. |
+| Release | The driver can release their own pause. |
+| One turn | The original client send is accepted. `onStartTurn` runs once and makes a real commit. |
+| Verify | HEAD moved and the tree is clean, so the task phase is `verified` and a notify intent is emitted. Reloading the file still says `verified`. |
+
+## Limits
+
+The compiled server does not load this journal: `journal.ts` is excluded from `tsconfig.server.json` because that program cannot import `packages/cowork-core`. The test daemon runs the source file. A cold start of a built daemon does not restore tasks.
+
+The git commit is made by the test double's `onStartTurn`, not by a product executor. The product code that decides `verified` only reads `git rev-parse` and `git status`.
+
+No desktop window. No production VM.

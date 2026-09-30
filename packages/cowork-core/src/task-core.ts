@@ -278,6 +278,18 @@ function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }
       intents: [],
     };
   }
+  if (state.phase === "paused") {
+    if (event.actor !== state.driverId) {
+      return { state: note(state, event.id, "release.rejected", event.actor, "not the driver"), intents: [] };
+    }
+    return {
+      state: withLiveness(
+        note({ ...state, holdDispatch: false, phase: "active" }, event.id, "release", event.actor, ""),
+        { kind: "wake", nextWakeAt: "after-release" },
+      ),
+      intents: [],
+    };
+  }
   const settled = state.writerSettledEpoch === state.controlEpoch;
   if (!settled) {
     return { state: note(state, event.id, "release.rejected", event.actor, "writer not settled"), intents: [] };

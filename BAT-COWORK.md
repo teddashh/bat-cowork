@@ -20,10 +20,10 @@ above that commit. Do not merge the BAT host back in.
 
 ## Status
 
-W0 inventory is on `main`. W1 is not accepted:
+W0 inventory is on `main`. W1 is not a Tauri session. W2 is one task on a local test daemon, not an admitted provider:
 
-- The imported App can subscribe to PTY events without starting a process. PTY writes still throw.
-- A Node read-only view listed a workspace, a file, and a diff on a local test daemon. The Tauri window is not connected, and `cargo check` still fails.
-- `send_agent_message_request` and `create_agent_request` call the cowork gate. A paused task blocks send on a real `Session` and does not start a run. An unregistered agent still sends. The allowed path in the test stops at a stub and does not start a provider.
+- A paused task is stored in `{paseoHome}/cowork/tasks.json`. Closing the client and dropping memory does not clear it. A second client still cannot send.
+- After the driver releases the pause, one fake-claude turn runs and commits. The verifier accepts only because HEAD moved and the worktree is clean.
+- The compiled server does not load that journal yet. See `docs/cowork/W2-STATUS.md`.
 
-Not done: a running Tauri client, a desktop connection, a managed task on the daemon, multi-user control, release. Do not point this tree at a running production daemon or an existing BAT session.
+Not done: a Tauri window, a desktop connection, Claude/Codex/Grok admission, a cold start of a built daemon restoring the task. Do not point this tree at a running production daemon or an existing BAT session.

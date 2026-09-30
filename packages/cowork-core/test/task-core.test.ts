@@ -137,6 +137,23 @@ test("presence and lease expiry do not take the writer; takeover holds dispatch 
   assert.equal(released.state.writerId, "hermes-a");
 });
 
+test("the driver can release their own pause without a takeover settle", () => {
+  const instructed = step(base(), {
+    id: "i1",
+    type: "instruction",
+    actor: "hermes-a",
+    role: "driver",
+    text: "fix",
+  }).state;
+  const paused = step(instructed, { id: "p", type: "control", action: "pause", actor: "hermes-a" }).state;
+  const stranger = step(paused, { id: "r0", type: "control", action: "release", actor: "ted" });
+  assert.equal(stranger.state.holdDispatch, true);
+  assert.equal(stranger.state.phase, "paused");
+  const resumed = step(paused, { id: "r1", type: "control", action: "release", actor: "hermes-a" });
+  assert.equal(resumed.state.holdDispatch, false);
+  assert.equal(resumed.state.phase, "active");
+});
+
 test("rework stops at the cap", () => {
   let state = step(base(), {
     id: "i1",
