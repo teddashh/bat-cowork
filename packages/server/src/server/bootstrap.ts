@@ -1,4 +1,5 @@
 import { describeHookWorkspace } from "./plugins/lifecycle/index.js";
+import { closeJournal, openJournal } from "./cowork/journal.js";
 import express from "express";
 import { createServer as createHTTPServer, type IncomingMessage, type ServerResponse } from "http";
 import { constants, existsSync, unlinkSync } from "fs";
@@ -1586,6 +1587,9 @@ export async function createPaseoDaemon(
   const start = async () => {
     let mainStarted = false;
     try {
+      await openJournal(config.paseoHome).catch((error) => {
+        logger.error({ err: error }, "Failed to restore cowork journal");
+      });
       localCredential = await writeLocalCredential(config.paseoHome);
       if (serviceProxyListenTarget) {
         const boundServiceProxyTarget = await serviceProxy.startStandalone({
@@ -1792,6 +1796,7 @@ export async function createPaseoDaemon(
   };
 
   const stop = async () => {
+    await closeJournal().catch(() => undefined);
     localCredential = null;
     await deleteLocalCredential(config.paseoHome);
     // Stop tracking plugin provider registrations before anything tears plugins

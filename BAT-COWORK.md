@@ -22,8 +22,8 @@ above that commit. Do not merge the BAT host back in.
 
 W0 inventory is on `main`. W1 is not a Tauri session. W2 is one task on a local test daemon, not an admitted provider:
 
-- A paused task is stored in `{paseoHome}/cowork/tasks.json`. Closing the client and dropping memory does not clear it. A second client still cannot send.
+- A paused task is stored in `{paseoHome}/cowork/tasks.json`. Stopping the daemon and starting another on the same home restores it. A new client still cannot send.
 - After the driver releases the pause, one fake-claude turn runs and commits. The verifier accepts only because HEAD moved and the worktree is clean.
-- The compiled server does not load that journal yet. See `docs/cowork/W2-STATUS.md`.
+- Daemon `start` loads that journal through the bundled reducer. See `docs/cowork/W2-STATUS.md`.
 
 Not done: a Tauri window, a desktop connection, Claude/Codex/Grok admission, a cold start of a built daemon restoring the task. Do not point this tree at a running production daemon or an existing BAT session.

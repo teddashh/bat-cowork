@@ -33,7 +33,6 @@
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*.spec.ts",
-    "src/**/*.spec.tsx",
-    "src/server/cowork/journal.ts"
+    "src/**/*.spec.tsx"
   ]
 }

@@ -25,6 +25,7 @@ export {
   claimWriter,
   createTask,
   dispatchAllowed,
+  managedWriteFields,
   step,
   type Evidence,
   type Intent,

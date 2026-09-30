@@ -1,8 +1,7 @@
 // Task journal for one daemon process.
-// The file is the record that survives a client disconnect.
-// step() is the cowork-core reducer. This module is loaded from source by the
-// test daemon. It is excluded from the server tsc program because that
-// program's rootDir cannot see packages/cowork-core.
+// The file under the daemon home is what a later process restores.
+// reducer.js is the bundled cowork-core step. Rebuild it from packages/cowork-core
+// when those rules change.
 
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -16,7 +15,7 @@ import {
   type StepResult,
   type TaskEvent,
   type TaskState,
-} from "../../../../cowork-core/src/task-core.ts";
+} from "./reducer.js";
 import { syncManagedAgent } from "./mutation-gate.js";
 
 const execFileAsync = promisify(execFile);
@@ -119,6 +118,14 @@ export async function verifyTask(id: string): Promise<StepResult> {
     type: "verify.passed",
     evidence: { revision: record.state.revision, commit: head },
   });
+}
+
+export async function closeJournal(): Promise<void> {
+  for (const record of records.values()) {
+    if (record.agentId) syncManagedAgent(record.agentId, null);
+  }
+  records.clear();
+  homeDir = null;
 }
 
 export async function dropJournalMemory(): Promise<void> {
