@@ -35,6 +35,16 @@ function gitRepo(): { repoDir: string; tempRoot: string } {
   return { repoDir, tempRoot };
 }
 
+async function waitForVerified(id: string) {
+  const started = Date.now();
+  while (Date.now() - started < 5000) {
+    const record = readTask(id);
+    if (record?.state.phase === "verified") return record;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`task ${id} stayed ${readTask(id)?.state.phase ?? "missing"}`);
+}
+
 test("a paused task survives the client, then one turn and a real commit can verify", async () => {
   let turns = 0;
   let repoDir = "";
@@ -128,10 +138,11 @@ test("a paused task survives the client, then one turn and a real commit can ver
     await third.connect();
     await third.sendAgentMessage(agentId, "do it");
     expect(turns).toBe(1);
-    const verified = await verifyTask("task-1");
-    expect(verified.state.phase).toBe("verified");
+    const verified = await waitForVerified("task-1");
     expect(verified.state.evidence?.commit).toEqual(expect.any(String));
-    expect(verified.intents.some((intent) => intent.type === "notify")).toBe(true);
+    expect(verified.state.outbox.some((item) => item.kind === "verified" && !item.failed)).toBe(
+      true,
+    );
 
     await dropJournalMemory();
     await openJournal(daemon.paseoHome);

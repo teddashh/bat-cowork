@@ -23,7 +23,7 @@ above that commit. Do not merge the BAT host back in.
 W0 inventory is on `main`. W1 is not a Tauri session. W2 is one task on a local test daemon, not an admitted provider:
 
 - A paused task is stored in `{paseoHome}/cowork/tasks.json`. Stopping the daemon and starting another on the same home restores it. A new client still cannot send.
-- After the driver releases the pause, one fake-claude turn runs and commits. The verifier accepts only because HEAD moved and the worktree is clean.
+- After the driver releases the pause, one fake-claude turn runs and commits. The daemon marks the task verified when that turn completes. The test does not call the verifier.
 - Daemon `start` loads that journal through the bundled reducer. See `docs/cowork/W2-STATUS.md`.
 - The desktop shell can attach read-only with `?daemon=ws://127.0.0.1:PORT/ws`. That path lists workspaces, files, and a diff from the daemon. It is not a Tauri window. See `docs/cowork/DESKTOP-READ.md`.
 

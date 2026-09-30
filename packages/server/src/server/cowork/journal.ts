@@ -123,6 +123,17 @@ export async function verifyTask(id: string): Promise<StepResult> {
   });
 }
 
+const TERMINAL_PHASE = new Set(["verified", "cancelled", "rejected"]);
+
+// Called when a live foreground turn finishes. The test does not decide
+// that the task is verified. A paused or finished task is left alone.
+export async function settleCoworkTurn(agentId: string): Promise<StepResult | null> {
+  const record = [...records.values()].find((item) => item.agentId === agentId);
+  if (!record) return null;
+  if (record.state.holdDispatch || TERMINAL_PHASE.has(record.state.phase)) return null;
+  return verifyTask(record.state.id);
+}
+
 export async function closeJournal(): Promise<void> {
   for (const record of records.values()) {
     if (record.agentId) syncManagedAgent(record.agentId, null);

@@ -16,13 +16,13 @@ One task on a local test daemon. Not a Tauri session, and not an admitted Claude
 | Pause | `sendAgentMessage` throws `cowork gate: held`. The fake turn does not start. |
 | Restart | A second `createTestPaseoDaemon` on the same home, after the first process stopped, restored the journal during `start`. A new client send still threw `cowork gate: held`. The fake turn did not start. `task-restart.e2e.test.ts` passed. |
 | Release | The driver can release their own pause. |
-| One turn | The original client send is accepted. `onStartTurn` runs once and makes a real commit. |
-| Verify | HEAD moved and the tree is clean, so the task phase is `verified` and a notify intent is emitted. Reloading the file still says `verified`. |
+| One turn | The original client send is accepted. `onStartTurn` runs once and makes a real commit. The test does not call `verifyTask` after that. |
+| Verify | A live foreground `turn_completed` calls `settleCoworkTurn`. HEAD had moved and the tree was clean, so the phase became `verified` and the outbox has a notify. A paused task is not settled. Reloading the file still says `verified`. |
 
 ## Limits
 
 `packages/server/src/server/cowork/reducer.js` is the bundled copy of `packages/cowork-core` that the server imports. Daemon `start` calls `openJournal`. Daemon `stop` drops the in-memory copy and leaves the file.
 
-The git commit in the first test is made by the test double's `onStartTurn`, not by a product executor. The product code that decides `verified` only reads `git rev-parse` and `git status`.
+The git commit in the first test is made by the test double's `onStartTurn`, not by a product executor. The product code that decides `verified` only reads `git rev-parse` and `git status`, and it runs when the foreground turn completes.
 
 No desktop window. No admitted Claude, Codex, or Grok binary. No production VM.
