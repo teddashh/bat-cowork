@@ -8,7 +8,7 @@
 
 > **這不是 Paseo 或 Better Agent Terminal 的官方版本，也不是正式發行版。** 沒有 tag、沒有簽章金鑰，也沒有自動更新。不要把它接到正式環境的 daemon 或既有的 BAT session。
 
-這份中文說明只涵蓋 BAT Cowork 的部分。Paseo 本身的介紹、安裝與開發說明，請看 [README.md 裡未經修改的上游 README](README.md#upstream-paseo-readme-unchanged)。
+這份中文說明只涵蓋 BAT Cowork 的部分。Paseo 本身的介紹、安裝與開發說明，請看 [README.md 裡的上游 README](README.md#upstream-paseo-readme)，除了清單裡的標點符號以外，內容都和上游相同。
 
 ## 這個 repo 是什麼
 
@@ -23,15 +23,15 @@
 
 依 [docs/cowork/RELEASE-GATE.md](docs/cowork/RELEASE-GATE.md)：
 
-| 工作包 | 狀態 | 證據 |
-| --- | --- | --- |
-| W0 | 已通過（accepted） | `docs/cowork/W0-REPORT.md`：Paseo 快照、upstream lock、第三方聲明與各項清單 |
-| W1 | 未通過（not accepted） | 能顯示 session 與檔案，關掉客戶端後 daemon 仍在；Tauri 還編譯不過 |
-| W2 | 未通過（not accepted） | 兩個本機客戶端看到同一次執行；重複的 message id 不會跑兩次；commit 落在 daemon 建立的 worktree |
-| W3 | 僅本機證據（local evidence） | `task-w3.e2e.test.ts`：重做、重啟，以及追加指令 |
-| W4 | 未通過（not accepted） | 兩個身分、兩個 worktree；留言會帶上 client id；旁觀者的暫停會被拒絕 |
-| W5 | 未通過（not accepted） | 讀得到 commit 紀錄、任務送出紀錄與時間軸；終端機仍被拒絕 |
-| W6 | 未通過（not accepted） | 舊格式的帳本能遷移，快照能還原 |
+| 工作包 | 狀態                         | 證據                                                                                           |
+| ------ | ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| W0     | 已通過（accepted）           | `docs/cowork/W0-REPORT.md`：Paseo 快照、upstream lock、第三方聲明與各項清單                    |
+| W1     | 未通過（not accepted）       | 能顯示 session 與檔案，關掉客戶端後 daemon 仍在；Tauri 還編譯不過                              |
+| W2     | 未通過（not accepted）       | 兩個本機客戶端看到同一次執行；重複的 message id 不會跑兩次；commit 落在 daemon 建立的 worktree |
+| W3     | 僅本機證據（local evidence） | `task-w3.e2e.test.ts`：重做、重啟，以及追加指令                                                |
+| W4     | 未通過（not accepted）       | 兩個身分、兩個 worktree；留言會帶上 client id；旁觀者的暫停會被拒絕                            |
+| W5     | 未通過（not accepted）       | 讀得到 commit 紀錄、任務送出紀錄與時間軸；終端機仍被拒絕                                       |
+| W6     | 未通過（not accepted）       | 舊格式的帳本能遷移，快照能還原                                                                 |
 
 標成未通過的工作包都還不能切換上線，切換目前是關閉的。以上全部只在本機測試 daemon 上、搭配程式內的假 Claude 客戶端跑過，還沒有任何 agent 供應者（Claude、Codex、Grok）獲准派工。
 

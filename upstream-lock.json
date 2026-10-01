@@ -13,7 +13,7 @@
     "better-agent-terminal": {
       "remote": "https://github.com/tony1223/better-agent-terminal",
       "commit": "41ea2b1e9142c9383d4b7813d754cb4a03dd0ace",
-      "role": "UI and Tauri shell source. Not imported in W0.",
+      "role": "UI and Tauri shell source. Not imported in W0. The renderer was imported into apps/bat-desktop later (see apps/bat-desktop/PROVENANCE.txt); the Tauri crate there is new.",
       "license": "MIT",
       "hostApiBlob": "2dd7e9ea02947f21947165610c41c47367a94b22"
     },
@@ -35,11 +35,5 @@
     ],
     "rule": "One wrapper may import the internal transport factory. UI components may not."
   },
-  "notPresent": [
-    "BAT renderer import",
-    "CoworkMutationGate implementation",
-    "task journal",
-    "Antigravity agent adapter",
-    "admitted provider dispatch"
-  ]
+  "notPresent": ["Antigravity agent adapter", "admitted provider dispatch"]
 }

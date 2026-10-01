@@ -14,7 +14,10 @@ import { applyTask, forgetJournal, openTask, readTask } from "./journal.js";
 function repo(root: string, name: string): string {
   const repoDir = path.join(root, name);
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), name + "\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -54,10 +57,22 @@ test("two principals cannot share one worktree, and takeover revokes send until 
   try {
     await alice.connect();
     await bob.connect();
-    const workspaceA = await alice.createWorkspace({ source: { kind: "directory", path: firstRepo } });
-    const workspaceB = await bob.createWorkspace({ source: { kind: "directory", path: secondRepo } });
-    const agentA = await alice.createAgent({ provider: "claude", cwd: firstRepo, model: "test-model" });
-    const agentB = await bob.createAgent({ provider: "claude", cwd: secondRepo, model: "test-model" });
+    const workspaceA = await alice.createWorkspace({
+      source: { kind: "directory", path: firstRepo },
+    });
+    const workspaceB = await bob.createWorkspace({
+      source: { kind: "directory", path: secondRepo },
+    });
+    const agentA = await alice.createAgent({
+      provider: "claude",
+      cwd: firstRepo,
+      model: "test-model",
+    });
+    const agentB = await bob.createAgent({
+      provider: "claude",
+      cwd: secondRepo,
+      model: "test-model",
+    });
     agents.push(agentA.id, agentB.id);
     const treeA = workspaceA.workspace?.id ?? firstRepo;
     const treeB = workspaceB.workspace?.id ?? secondRepo;
@@ -116,7 +131,9 @@ test("two principals cannot share one worktree, and takeover revokes send until 
     expect(readTask("task-a")?.state.holdDispatch).toBe(false);
     await alice.sendAgentMessage(agentA.id, "go");
     expect(turns).toBe(1);
-    await expect(bob.sendAgentMessage(agentA.id, "still not mine")).rejects.toThrow(/cowork gate: writer/);
+    await expect(bob.sendAgentMessage(agentA.id, "still not mine")).rejects.toThrow(
+      /cowork gate: writer/,
+    );
     expect(turns).toBe(1);
   } finally {
     for (const id of agents) syncManagedAgent(id, null);

@@ -36,10 +36,7 @@ export function clearManagedWriteTarget(kind: "agent" | "workspace", id: string)
   mapFor(kind).delete(id);
 }
 
-export function syncManagedAgent(
-  agentId: string,
-  fields: ManagedWriteTarget | null,
-): void {
+export function syncManagedAgent(agentId: string, fields: ManagedWriteTarget | null): void {
   if (!fields) {
     clearManagedWriteTarget("agent", agentId);
     return;

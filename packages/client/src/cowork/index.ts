@@ -4,11 +4,7 @@ export type {
   CreateNativeDaemonTransportOptions,
 } from "./tauri-transport.js";
 export { createDaemonReadView } from "./daemon-reads.js";
-export type {
-  CheckoutDiffCompare,
-  DaemonReadSource,
-  DaemonReadView,
-} from "./daemon-reads.js";
+export type { CheckoutDiffCompare, DaemonReadSource, DaemonReadView } from "./daemon-reads.js";
 export {
   PUBLIC_CLIENT_READ_GAPS,
   assertReadOnly,

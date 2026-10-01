@@ -6,18 +6,18 @@ One task on a local test daemon. Not a Tauri session, and not an admitted Claude
 
 `packages/server/src/server/cowork/task-loop.e2e.test.ts` passed once.
 
-| Step | Result |
-| --- | --- |
-| Daemon | `createTestPaseoDaemon` with the in-process fake `claude` client. No provider binary. |
-| Workspace | A real git repo, opened as a directory workspace. |
-| Agent | `createAgent({ provider: "claude", model: "test-model" })` on that fake client. |
-| Journal | `openTask` writes `{paseoHome}/cowork/tasks.json` and registers the agent on the gate. |
-| Early verify | Rejected. HEAD had not moved. |
-| Pause | `sendAgentMessage` throws `cowork gate: held`. The fake turn does not start. |
-| Restart | A second `createTestPaseoDaemon` on the same home, after the first process stopped, restored the journal during `start`. A new client send still threw `cowork gate: held`. The fake turn did not start. `task-restart.e2e.test.ts` passed. |
-| Release | The driver can release their own pause. |
-| One turn | The original client send is accepted. `onStartTurn` runs once and makes a real commit. The test does not call `verifyTask` after that. |
-| Verify | A live foreground `turn_completed` calls `settleCoworkTurn`. HEAD had moved and the tree was clean, so the phase became `verified` and the outbox has a notify. A paused task is not settled. Reloading the file still says `verified`. |
+| Step         | Result                                                                                                                                                                                                                                      |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Daemon       | `createTestPaseoDaemon` with the in-process fake `claude` client. No provider binary.                                                                                                                                                       |
+| Workspace    | A real git repo, opened as a directory workspace.                                                                                                                                                                                           |
+| Agent        | `createAgent({ provider: "claude", model: "test-model" })` on that fake client.                                                                                                                                                             |
+| Journal      | `openTask` writes `{paseoHome}/cowork/tasks.json` and registers the agent on the gate.                                                                                                                                                      |
+| Early verify | Rejected. HEAD had not moved.                                                                                                                                                                                                               |
+| Pause        | `sendAgentMessage` throws `cowork gate: held`. The fake turn does not start.                                                                                                                                                                |
+| Restart      | A second `createTestPaseoDaemon` on the same home, after the first process stopped, restored the journal during `start`. A new client send still threw `cowork gate: held`. The fake turn did not start. `task-restart.e2e.test.ts` passed. |
+| Release      | The driver can release their own pause.                                                                                                                                                                                                     |
+| One turn     | The original client send is accepted. `onStartTurn` runs once and makes a real commit. The test does not call `verifyTask` after that.                                                                                                      |
+| Verify       | A live foreground `turn_completed` calls `settleCoworkTurn`. HEAD had moved and the tree was clean, so the phase became `verified` and the outbox has a notify. A paused task is not settled. Reloading the file still says `verified`.     |
 
 ## Limits
 

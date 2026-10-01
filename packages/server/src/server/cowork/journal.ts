@@ -4,7 +4,7 @@
 // when those rules change.
 
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, rename, rm } from "node:fs/promises";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -39,12 +39,39 @@ async function git(cwd: string, args: string[]): Promise<string> {
   return stdout.trim();
 }
 
-async function persist(): Promise<void> {
-  if (!homeDir) return;
+// Replace the journal in one step. The new body goes to a temp file in the same
+// directory, is synced to disk, and is then renamed over the old file, so a
+// process that dies mid-write leaves either the old journal or the new one.
+async function replaceJournalFile(file: string, body: string): Promise<void> {
+  const dir = path.dirname(file);
+  await mkdir(dir, { recursive: true });
+  const temp = path.join(dir, `.${path.basename(file)}.${process.pid}.${randomUUID()}.tmp`);
+  try {
+    const handle = await open(temp, "wx");
+    try {
+      await handle.writeFile(body, "utf8");
+      await handle.sync();
+    } finally {
+      await handle.close();
+    }
+    await rename(temp, file);
+  } catch (error) {
+    await rm(temp, { force: true });
+    throw error;
+  }
+}
+
+// Writes run one at a time, in call order, so an older snapshot cannot land
+// after a newer one.
+let persistQueue: Promise<void> = Promise.resolve();
+
+function persist(): Promise<void> {
+  if (!homeDir) return Promise.resolve();
   const file = journalFile(homeDir);
-  await mkdir(path.dirname(file), { recursive: true });
   const body = JSON.stringify([...records.values()], null, 2);
-  await writeFile(file, body);
+  const write = persistQueue.then(() => replaceJournalFile(file, body));
+  persistQueue = write.catch(() => undefined);
+  return write;
 }
 
 function bind(record: JournalRecord): void {
@@ -55,7 +82,11 @@ function bind(record: JournalRecord): void {
 function parseJournal(raw: string): JournalRecord[] {
   const parsed = JSON.parse(raw) as unknown;
   if (Array.isArray(parsed)) return parsed as JournalRecord[];
-  if (parsed && typeof parsed === "object" && Array.isArray((parsed as { tasks?: unknown }).tasks)) {
+  if (
+    parsed &&
+    typeof parsed === "object" &&
+    Array.isArray((parsed as { tasks?: unknown }).tasks)
+  ) {
     return (parsed as { tasks: JournalRecord[] }).tasks;
   }
   throw new Error("cowork journal: unrecognized shape");

@@ -50,7 +50,8 @@ test("a managed agent denies a stale revision, the wrong writer, a held dispatch
 
   registerManagedWriteTarget("agent", "agent-1", open);
   expect(
-    authorizeCoworkWrite({ kind: "agent", id: "agent-1", actor: "client-a", commandId: "m1" }).allow,
+    authorizeCoworkWrite({ kind: "agent", id: "agent-1", actor: "client-a", commandId: "m1" })
+      .allow,
   ).toBe(true);
   expect(
     authorizeCoworkWrite({ kind: "agent", id: "agent-1", actor: "client-a", commandId: "m1" }),
@@ -61,7 +62,8 @@ test("a managed agent denies a stale revision, the wrong writer, a held dispatch
 test("sync keeps a command id that was already dispatched", () => {
   syncManagedAgent("agent-2", open);
   expect(
-    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" }).allow,
+    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" })
+      .allow,
   ).toBe(true);
   syncManagedAgent("agent-2", { ...open, revision: 2, expectedRevision: 2 });
   expect(
@@ -69,7 +71,8 @@ test("sync keeps a command id that was already dispatched", () => {
   ).toEqual({ allow: false, error: "cowork gate: duplicate" });
   syncManagedAgent("agent-2", null);
   expect(
-    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" }).allow,
+    authorizeCoworkWrite({ kind: "agent", id: "agent-2", actor: "client-a", commandId: "m9" })
+      .allow,
   ).toBe(true);
 });
 

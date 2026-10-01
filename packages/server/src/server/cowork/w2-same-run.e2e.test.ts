@@ -16,7 +16,10 @@ test("two clients see one run, and the same message id does not run twice", asyn
   const tempRoot = mkdtempSync(path.join(tmpdir(), "bat-cowork-w2-"));
   const repoDir = path.join(tempRoot, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });

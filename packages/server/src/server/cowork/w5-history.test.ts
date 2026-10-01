@@ -4,13 +4,23 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { expect, test } from "vitest";
 import { syncManagedAgent } from "./mutation-gate.js";
-import { applyTask, dropJournalMemory, forgetJournal, openJournal, openTask, readTask } from "./journal.js";
+import {
+  applyTask,
+  dropJournalMemory,
+  forgetJournal,
+  openJournal,
+  openTask,
+  readTask,
+} from "./journal.js";
 
 test("two hundred comments survive a reload and do not verify the task", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "bat-cowork-w5-"));
   const repoDir = path.join(root, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });

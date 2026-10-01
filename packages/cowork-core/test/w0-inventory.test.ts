@@ -29,7 +29,9 @@ test("session ingress matches the locked Session switch", () => {
   const fromTable = SESSION_INGRESS.map((row) => row.type);
   assert.deepEqual(fromTable, fromSource);
   assert.equal(SESSION_INGRESS.length, 162);
-  const managed = SESSION_INGRESS.filter((row) => row.gate === "managed-only").map((row) => row.type);
+  const managed = SESSION_INGRESS.filter((row) => row.gate === "managed-only").map(
+    (row) => row.type,
+  );
   assert.deepEqual(managed.sort(), ["create_agent_request", "send_agent_message_request"]);
   for (const row of SESSION_INGRESS) {
     if (row.gate !== "managed-only") assert.equal(row.gate, "not-wired");
@@ -54,7 +56,10 @@ test("BAT host map keeps the namespaces that must not survive as a second owner"
 });
 
 test("no provider is admitted, and the Grok catalog row is the one in this tree", () => {
-  assert.equal(PROVIDERS.every((row) => row.admittedForDispatch === false), true);
+  assert.equal(
+    PROVIDERS.every((row) => row.admittedForDispatch === false),
+    true,
+  );
   for (const row of PROVIDERS) {
     assert.throws(() => assertProviderAdmitted(row.id), /not admitted/);
   }

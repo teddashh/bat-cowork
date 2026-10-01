@@ -21,15 +21,15 @@ A derivative of Paseo at commit `53ee9cd` (Paseo 0.10.0). Paseo's server, client
 
 From [docs/cowork/RELEASE-GATE.md](docs/cowork/RELEASE-GATE.md):
 
-| Package | Status | Evidence |
-| --- | --- | --- |
-| W0 | accepted | `docs/cowork/W0-REPORT.md`: the Paseo snapshot, upstream lock, notices, and inventories |
-| W1 | not accepted | Sessions and files are shown, and closing the client leaves the daemon up; Tauri does not compile |
-| W2 | not accepted | Two local clients see one run; a repeated message id does not run twice; the commit lands in a daemon-made worktree |
-| W3 | local evidence | `task-w3.e2e.test.ts`: rework, restart, and a further instruction |
-| W4 | not accepted | Two principals and two worktrees; a comment carries the client id; a viewer pause is rejected |
-| W5 | not accepted | Commit history, task receipts, and the task timeline are readable; the terminal stays refused |
-| W6 | not accepted | An old journal wrapper migrates and a snapshot restores |
+| Package | Status         | Evidence                                                                                                            |
+| ------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| W0      | accepted       | `docs/cowork/W0-REPORT.md`: the Paseo snapshot, upstream lock, notices, and inventories                             |
+| W1      | not accepted   | Sessions and files are shown, and closing the client leaves the daemon up; Tauri does not compile                   |
+| W2      | not accepted   | Two local clients see one run; a repeated message id does not run twice; the commit lands in a daemon-made worktree |
+| W3      | local evidence | `task-w3.e2e.test.ts`: rework, restart, and a further instruction                                                   |
+| W4      | not accepted   | Two principals and two worktrees; a comment carries the client id; a viewer pause is rejected                       |
+| W5      | not accepted   | Commit history, task receipts, and the task timeline are readable; the terminal stays refused                       |
+| W6      | not accepted   | An old journal wrapper migrates and a snapshot restores                                                             |
 
 A package marked not accepted is not cleared for cutover, and cutover is closed. All of this ran on a local test daemon with an in-process fake Claude client. No agent provider (Claude, Codex, Grok) is admitted for dispatch.
 
@@ -43,9 +43,9 @@ Project notes: [BAT-COWORK.md](BAT-COWORK.md). Work package status and evidence:
 
 ---
 
-## Upstream Paseo README (unchanged)
+## Upstream Paseo README
 
-Everything below is Paseo's own README, unchanged since the `53ee9cd` snapshot. Its badges, downloads, and install steps describe upstream Paseo, not this repository.
+Everything below is Paseo's own README from the `53ee9cd` snapshot. The only edit is punctuation: dashes in list items became colons. Its badges, downloads, and install steps describe upstream Paseo, not this repository.
 
 <p align="center">
   <img src="packages/website/public/logo.svg" width="64" height="64" alt="Paseo logo">
@@ -208,9 +208,9 @@ npx skills add getpaseo/paseo
 
 Then use them in any agent conversation:
 
-- `/paseo-handoff` — hand off work between agents. I use this to plan with Claude and then handoff to Codex to implement.
-- `/paseo-advisor` — spin up a single agent as an advisor for a second opinion, without delegating the work itself.
-- `/paseo-committee` — form a committee of two contrasting agents to step back, do root cause analysis, and produce a plan.
+- `/paseo-handoff`: hand off work between agents. I use this to plan with Claude and then handoff to Codex to implement.
+- `/paseo-advisor`: spin up a single agent as an advisor for a second opinion, without delegating the work itself.
+- `/paseo-committee`: form a committee of two contrasting agents to step back, do root cause analysis, and produce a plan.
 
 ## Development
 
@@ -250,8 +250,8 @@ Paseo is built by one person and funded by the people who use it. Support the wo
 
 ## Related projects
 
-- [getpaseo/paseo-relay](https://github.com/getpaseo/paseo-relay) — official distributed relay, written in Elixir
-- [paseo-vscode](https://marketplace.visualstudio.com/items?itemName=hinnes.paseo-vscode) — VS Code extension
+- [getpaseo/paseo-relay](https://github.com/getpaseo/paseo-relay): official distributed relay, written in Elixir
+- [paseo-vscode](https://marketplace.visualstudio.com/items?itemName=hinnes.paseo-vscode): VS Code extension
 
 ## License
 

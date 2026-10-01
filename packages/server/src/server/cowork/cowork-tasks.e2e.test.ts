@@ -12,7 +12,10 @@ test("a client can read the task receipt", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "bat-cowork-receipt-"));
   const repoDir = path.join(root, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -55,9 +58,9 @@ test("a client can read the task receipt", async () => {
     expect(task?.receipts.some((receipt) => receipt.kind === "verified" && !receipt.failed)).toBe(
       true,
     );
-    expect(task?.timeline.some((entry) => entry.kind === "instruction" && entry.text === "ship it")).toBe(
-      true,
-    );
+    expect(
+      task?.timeline.some((entry) => entry.kind === "instruction" && entry.text === "ship it"),
+    ).toBe(true);
   } finally {
     syncManagedAgent("agent-receipt", null);
     await forgetJournal();

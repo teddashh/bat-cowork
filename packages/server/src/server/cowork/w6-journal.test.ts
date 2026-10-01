@@ -17,7 +17,10 @@ import {
 function repo(root: string): string {
   const repoDir = path.join(root, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -50,12 +53,21 @@ test("an old tasks wrapper migrates, and restoring the file rolls the extra comm
     expect(readTask("task-old")?.baselineCommit).toMatch(/^[0-9a-f]{40}$/);
 
     const restored = readFileSync(file, "utf8");
-    await applyTask("task-old", { id: "extra", type: "comment", actor: "alice", text: "do not keep" });
-    expect(readTask("task-old")?.state.timeline.some((entry) => entry.text === "do not keep")).toBe(true);
+    await applyTask("task-old", {
+      id: "extra",
+      type: "comment",
+      actor: "alice",
+      text: "do not keep",
+    });
+    expect(readTask("task-old")?.state.timeline.some((entry) => entry.text === "do not keep")).toBe(
+      true,
+    );
     writeFileSync(file, restored);
     await dropJournalMemory();
     await openJournal(root);
-    expect(readTask("task-old")?.state.timeline.some((entry) => entry.text === "do not keep")).toBe(false);
+    expect(readTask("task-old")?.state.timeline.some((entry) => entry.text === "do not keep")).toBe(
+      false,
+    );
   } finally {
     syncManagedAgent("agent-old", null);
     await forgetJournal();

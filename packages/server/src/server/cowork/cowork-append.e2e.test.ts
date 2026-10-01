@@ -12,7 +12,10 @@ test("a client comment keeps its own id and a viewer cannot pause", async () => 
   const root = mkdtempSync(path.join(tmpdir(), "bat-cowork-append-"));
   const repoDir = path.join(root, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -49,9 +52,14 @@ test("a client comment keeps its own id and a viewer cannot pause", async () => 
     });
     expect(comment.error).toBeNull();
     expect(comment.duplicate).toBe(false);
-    expect(comment.task?.timeline.some((entry) =>
-      entry.kind === "comment" && entry.actor === "client-b" && entry.text === "from the viewer",
-    )).toBe(true);
+    expect(
+      comment.task?.timeline.some(
+        (entry) =>
+          entry.kind === "comment" &&
+          entry.actor === "client-b" &&
+          entry.text === "from the viewer",
+      ),
+    ).toBe(true);
 
     const again = await viewer.appendCoworkTask({
       taskId: "task-append",
@@ -68,7 +76,11 @@ test("a client comment keeps its own id and a viewer cannot pause", async () => 
     });
     expect(denied.task?.phase).toBe("active");
     expect(denied.task?.holdDispatch).toBe(false);
-    expect(denied.task?.timeline.some((entry) => entry.kind === "control.rejected" && entry.actor === "client-b")).toBe(true);
+    expect(
+      denied.task?.timeline.some(
+        (entry) => entry.kind === "control.rejected" && entry.actor === "client-b",
+      ),
+    ).toBe(true);
 
     const paused = await driver.appendCoworkTask({
       taskId: "task-append",

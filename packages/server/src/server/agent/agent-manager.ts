@@ -1,3 +1,4 @@
+import { projectTimelineRows } from "./timeline-projection.js";
 import { settleCoworkTurn } from "../cowork/journal.js";
 import type { PluginLifecycle } from "../plugins/lifecycle/index.js";
 import { describeHookAgent, publishAgentStream } from "../plugins/lifecycle/index.js";
@@ -4211,11 +4212,7 @@ export class AgentManager {
         }
       }
 
-      if (
-        event.type === "turn_completed" &&
-        isForegroundEvent &&
-        terminalDisposition !== "stale"
-      ) {
+      if (event.type === "turn_completed" && isForegroundEvent && terminalDisposition !== "stale") {
         void settleCoworkTurn(agent.id).catch((err) => {
           this.logger.error({ err, agentId: agent.id }, "cowork verify after turn failed");
         });

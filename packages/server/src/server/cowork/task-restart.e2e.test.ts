@@ -97,7 +97,9 @@ test("a restarted daemon restores the paused task and still blocks send", async 
     });
     try {
       await again.connect();
-      await expect(again.sendAgentMessage(agentId, "still held")).rejects.toThrow(/cowork gate: held/);
+      await expect(again.sendAgentMessage(agentId, "still held")).rejects.toThrow(
+        /cowork gate: held/,
+      );
       expect(turns).toBe(0);
     } finally {
       await again.close().catch(() => undefined);
