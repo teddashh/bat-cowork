@@ -242,8 +242,8 @@
     "kicker": {"en": "Honest status", "zh": "誠實的現況"},
     "title": {"en": "Where it stands.", "zh": "目前的樣子。"},
     "intro": {
-      "en": "Work began on 2026-09-30, and the tree is still changing quickly. There are no tags or releases. CI on main runs Paseo's suites and the cowork tests; a few end-to-end tests inherited from Paseo fail now and then and pass on a rerun. Paseo is by Mohamed Boudra and contributors; BAT is by TonyQ. This is not an official build of either.",
-      "zh": "2026 年 9 月 30 日才開始，程式碼還在快速變動。沒有任何 tag 或正式版本。main 的 CI 會跑 Paseo 原有的測試與協作測試；有幾個從 Paseo 帶來的端對端測試偶爾失敗，重跑就會通過。Paseo 的作者是 Mohamed Boudra 與其貢獻者，BAT 的作者是 TonyQ；本專案不是兩者的官方版本。"
+      "en": "Work began on 2026-09-30, and the tree is still changing quickly. There are no tags or releases. CI on main runs Paseo's suites and the cowork tests; a few tests inherited from Paseo fail now and then and pass on a rerun. Paseo is by Mohamed Boudra and contributors; BAT is by TonyQ. This is not an official build of either.",
+      "zh": "2026 年 9 月 30 日才開始，程式碼還在快速變動。沒有任何 tag 或正式版本。main 的 CI 會跑 Paseo 原有的測試與協作測試；有幾個從 Paseo 帶來的測試偶爾失敗，重跑就會通過。Paseo 的作者是 Mohamed Boudra 與其貢獻者，BAT 的作者是 TonyQ；本專案不是兩者的官方版本。"
     },
     "works_title": {"en": "Works on a local test daemon", "zh": "在本機測試 daemon 上可用"},
     "works": [
