@@ -1,3 +1,52 @@
+# bat-cowork
+
+**English** · [繁體中文](README.zh-TW.md)
+
+Work in progress: the Better Agent Terminal (BAT) desktop UI on a daemon derived from [Paseo](https://github.com/getpaseo/paseo), with the task rules inside the daemon.
+
+**Project page:** https://teddashh.github.io/bat-cowork/
+
+> **Not an official Paseo or Better Agent Terminal build, and not a release.** There are no tags, no signing key, and no updater. Do not point it at a production daemon or an existing BAT session.
+
+## What this repository is
+
+A derivative of Paseo at commit `53ee9cd` (Paseo 0.10.0). Paseo's server, client, protocol, and CLI stay on their upstream paths. This repository adds:
+
+- `apps/bat-desktop`: the BAT renderer, imported from Better Agent Terminal at `41ea2b1`, plus a new Tauri crate with its own app id and no updater. The Tauri shell does not compile yet; a browser shell can read a local daemon.
+- `packages/cowork-core`: the task rules (one driver per task; viewers can comment and propose), the dispatch policy, and an inventory of Paseo's inbound messages.
+- `packages/server/src/server/cowork`: a send gate for managed agents and a task journal at `{paseoHome}/cowork/tasks.json`.
+- Changes to seven upstream Paseo files (237 lines added, 1 removed) that wire the cowork code in.
+
+## Status
+
+From [docs/cowork/RELEASE-GATE.md](docs/cowork/RELEASE-GATE.md):
+
+| Package | Status | Evidence |
+| --- | --- | --- |
+| W0 | accepted | `docs/cowork/W0-REPORT.md`: the Paseo snapshot, upstream lock, notices, and inventories |
+| W1 | not accepted | Sessions and files are shown, and closing the client leaves the daemon up; Tauri does not compile |
+| W2 | not accepted | Two local clients see one run; a repeated message id does not run twice; the commit lands in a daemon-made worktree |
+| W3 | local evidence | `task-w3.e2e.test.ts`: rework, restart, and a further instruction |
+| W4 | not accepted | Two principals and two worktrees; a comment carries the client id; a viewer pause is rejected |
+| W5 | not accepted | Commit history, task receipts, and the task timeline are readable; the terminal stays refused |
+| W6 | not accepted | An old journal wrapper migrates and a snapshot restores |
+
+A package marked not accepted is not cleared for cutover, and cutover is closed. All of this ran on a local test daemon with an in-process fake Claude client. No agent provider (Claude, Codex, Grok) is admitted for dispatch.
+
+## Credits and license
+
+- [Paseo](https://github.com/getpaseo/paseo) is by Mohamed Boudra and other Paseo contributors. It is licensed under the Apache License 2.0, except third-party components, which keep their own licenses. See [LICENSE](LICENSE).
+- [Better Agent Terminal](https://github.com/tony1223/better-agent-terminal) is by TonyQ. The imported UI is MIT licensed; its license and copyright notice are kept in [apps/bat-desktop/BAT-LICENSE](apps/bat-desktop/BAT-LICENSE).
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists the upstream commits and what is and is not included.
+
+Project notes: [BAT-COWORK.md](BAT-COWORK.md). Work package status and evidence: [docs/cowork/](docs/cowork/). Traditional Chinese: [README.zh-TW.md](README.zh-TW.md).
+
+---
+
+## Upstream Paseo README (unchanged)
+
+Everything below is Paseo's own README, unchanged since the `53ee9cd` snapshot. Its badges, downloads, and install steps describe upstream Paseo, not this repository.
+
 <p align="center">
   <img src="packages/website/public/logo.svg" width="64" height="64" alt="Paseo logo">
 </p>
