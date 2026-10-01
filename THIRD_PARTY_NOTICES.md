@@ -17,14 +17,21 @@ renaming the product.
 
 ## Better Agent Terminal
 
-The desktop UI will be imported from
+The desktop UI in `apps/bat-desktop` is imported from
 [tony1223/better-agent-terminal](https://github.com/tony1223/better-agent-terminal)
-at commit `41ea2b1e9142c9383d4b7813d754cb4a03dd0ace` (MIT). That import has not
-happened. W0 only records the host-namespace map from
-`renderer/src/host-api.ts` (blob `2dd7e9ea02947f21947165610c41c47367a94b22`).
+at commit `41ea2b1e9142c9383d4b7813d754cb4a03dd0ace` (MIT). The Tauri crate in
+`apps/bat-desktop/src-tauri` is new, with its own app id.
 
-When the UI is imported, keep the original MIT copyright notice with the files,
-and do not reuse the upstream app id, updater endpoint, or update public key.
+Copyright (c) 2024 TonyQ. The MIT license text is kept in
+[apps/bat-desktop/BAT-LICENSE](apps/bat-desktop/BAT-LICENSE).
+[apps/bat-desktop/PROVENANCE.txt](apps/bat-desktop/PROVENANCE.txt) records the
+source commit and what was left out: node-sidecar, the Claude and Codex SDKs,
+agent binaries, and the original updater. Before the import, W0 recorded the
+host-namespace map from `renderer/src/host-api.ts` (blob
+`2dd7e9ea02947f21947165610c41c47367a94b22`).
+
+Keep the original MIT copyright notice with the imported files, and do not
+reuse the upstream app id, updater endpoint, or update public key.
 
 ## bat-agent-connector
 

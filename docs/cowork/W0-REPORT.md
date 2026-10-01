@@ -4,11 +4,11 @@ Date: 2026-09-29.
 
 ## Baseline commits
 
-| Source | Commit | What this checkout did |
-| --- | --- | --- |
-| getpaseo/paseo | `53ee9cd9930d9479af318c1ed29713a0bfb5f47b` | Checked out as `baseline/paseo-w0`. `main` starts here. |
-| tony1223/better-agent-terminal | `41ea2b1e9142c9383d4b7813d754cb4a03dd0ace` | Read `renderer/src/host-api.ts` only. Not imported. |
-| teddashh/bat-agent-connector | `71337aa5133fc04bf332d3da15e819c16585c7a3` | Named in `upstream-lock.json`. No Python copied. |
+| Source                         | Commit                                     | What this checkout did                                  |
+| ------------------------------ | ------------------------------------------ | ------------------------------------------------------- |
+| getpaseo/paseo                 | `53ee9cd9930d9479af318c1ed29713a0bfb5f47b` | Checked out as `baseline/paseo-w0`. `main` starts here. |
+| tony1223/better-agent-terminal | `41ea2b1e9142c9383d4b7813d754cb4a03dd0ace` | Read `renderer/src/host-api.ts` only. Not imported.     |
+| teddashh/bat-agent-connector   | `71337aa5133fc04bf332d3da15e819c16585c7a3` | Named in `upstream-lock.json`. No Python copied.        |
 
 Paseo `HEAD` on GitHub at clone time was `4e9a4582` (`fix(app): stop connecting to a host removed during its first probe`). That is newer than the lock and is not the product baseline.
 
@@ -39,7 +39,7 @@ P12, P13, P14, P15 were not re-read line by line in this pass. They stay "locate
 ## Added
 
 - A host-namespace disposition table for the 30 namespaces in BAT `createTauriHost`.
-- A 162-row inventory of the `Session` inbound switch (`session.ts` lines 2300–3200). 90 are writes. Every row is `gate: "not-wired"`.
+- A 162-row inventory of the `Session` inbound switch (`session.ts` lines 2300-3200). 90 are writes. Every row is `gate: "not-wired"`.
 - `assertIngressGated` and `assertProviderAdmitted`. Both throw. They are refusals, not a gate.
 
 ## Removed
