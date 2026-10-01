@@ -13,7 +13,7 @@
   },
   "title": {
     "en": "A cowork workstation on a Paseo-derived daemon (work in progress)",
-    "zh": "建在 Paseo 衍生 daemon 上的協作工作站（開發中）"
+    "zh": "建在衍生自 Paseo 的 daemon 上的協作工作站（開發中）"
   },
   "description": {
     "en": "Work in progress: the Better Agent Terminal desktop UI on a daemon derived from Paseo, with task rules inside the daemon. Not an official Paseo or BAT build, and not a release.",
@@ -65,7 +65,7 @@
     "title": {"en": "One agent, several clients, nobody in charge.", "zh": "客戶端一多，就沒人主導。"},
     "body": {
       "en": "When a desktop app owns the agent processes, closing it stops the work. When several clients reach the same agent, any of them can send, pause, or resend, and nothing records who decided what. BAT Cowork keeps BAT's interface, drops its local sidecar and agent spawning, and lets a Paseo daemon own agents, worktrees, and task state, with the task rules next to the sessions they guard.",
-      "zh": "如果 agent 程序綁在桌面 app 上，關掉 app，工作就停了。好幾個客戶端連到同一個 agent 時，誰都能送指令、暫停或重送，也沒有地方記錄是誰決定了什麼。BAT Cowork 保留 BAT 的介面，拿掉它在本機的 sidecar 與啟動 agent 的部分，改由 Paseo daemon 管理 agent、worktree 與任務狀態，任務規則就放在它要把關的 session 旁邊。"
+      "zh": "如果 agent 程式綁在桌面 app 上，關掉 app，工作就停了。好幾個客戶端連到同一個 agent 時，誰都能送指令、暫停或重送，也沒有地方記錄是誰決定了什麼。BAT Cowork 保留 BAT 的介面，拿掉它在本機的 sidecar 與啟動 agent 的部分，改由 Paseo daemon 管理 agent、worktree 與任務狀態，任務規則就放在它要把關的 session 旁邊。"
     },
     "quote": {
       "en": "Viewers can comment. Only the driver gives instructions.",
@@ -77,7 +77,7 @@
     "title": {"en": "What is in the tree today, tested only locally.", "zh": "目前做好的部分，都只在本機測過。"},
     "intro": {
       "en": "Everything below ran against a local test daemon with an in-process fake Claude client. None of it has driven a real agent yet.",
-      "zh": "以下每一項都只在本機測試 daemon 上、搭配程序內的假 Claude 客戶端跑過，還沒有驅動過真正的 agent。"
+      "zh": "以下每一項都只在本機測試 daemon 上、搭配程式內的假 Claude 客戶端跑過，還沒有驅動過真正的 agent。"
     },
     "items": [
       {
@@ -192,7 +192,7 @@
         "title": {"en": "Rules in the daemon, not a second service", "zh": "規則放在 daemon 裡，不另開服務"},
         "body": {
           "en": "Task rules run in the same process as the sessions they guard. bat-agent-connector's Python task daemon is a behavior reference only and is not vendored, so there is one owner of task state and no second ledger to reconcile.",
-          "zh": "任務規則和它要把關的 session 跑在同一個程序裡。bat-agent-connector 的 Python 任務服務只當行為參考，沒有複製進來，所以任務狀態只有一個擁有者，不會有第二本帳要對。"
+          "zh": "任務規則和它要把關的 session 跑在同一個程式裡。bat-agent-connector 的 Python 任務服務只當行為參考，沒有複製進來，所以任務狀態只有一個擁有者，不會有第二本帳要對。"
         }
       },
       {
