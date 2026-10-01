@@ -5,7 +5,7 @@
   "mark": "BC",
   "palette": "lime",
   "default_branch": "main",
-  "verified": "2026-09-30",
+  "verified": "2026-10-01",
   "language": "TypeScript",
   "license": {
     "label": {"en": "License", "zh": "授權"},
@@ -115,8 +115,8 @@
       {
         "title": {"en": "A journal that survives restarts", "zh": "重啟後還在的任務帳本"},
         "body": {
-          "en": "Tasks are written to {paseoHome}/cowork/tasks.json and restored when the daemon starts. A paused task stays held. A command that was in flight becomes unknown until the driver acknowledges it, and it is not resent.",
-          "zh": "任務寫在 {paseoHome}/cowork/tasks.json，daemon 啟動時還原。暫停中的任務維持暫停；重啟前還在執行的指令會標成 unknown，要等主導者確認，而且不會重送。"
+          "en": "Tasks are written to {paseoHome}/cowork/tasks.json and restored when the daemon starts. Each write goes to a synced temp file that is then renamed over the journal, so a crash leaves the old copy or the new one, never half of each. A paused task stays held. A command that was in flight becomes unknown until the driver acknowledges it, and it is not resent.",
+          "zh": "任務寫在 {paseoHome}/cowork/tasks.json，daemon 啟動時還原。每次寫入都先寫到同步到磁碟的暫存檔，再改名蓋過帳本，所以中途當掉時留下的是舊版或新版，不會是各一半。暫停中的任務維持暫停；重啟前還在執行的指令會標成 unknown，要等主導者確認，而且不會重送。"
         },
         "tag": "server/cowork/journal.ts"
       },
@@ -215,8 +215,8 @@
     "kicker": {"en": "Try it", "zh": "動手試試"},
     "title": {"en": "Read the gate, then run the tests.", "zh": "先看關卡，再跑測試。"},
     "intro": {
-      "en": "There is nothing to install as a product. In a clone of the repo, these suites need only Node (24 was used here) and no npm install. The server-side cowork tests run under vitest and need the full Paseo workspace install.",
-      "zh": "目前沒有可以安裝的產品。在 clone 下來的 repo 裡，下面這幾組測試只需要 Node（這裡用的是 24 版），不用 npm install。server 端的協作測試跑在 vitest 上，需要先安裝整個 Paseo workspace。"
+      "en": "There is nothing to install as a product. In a clone of the repo, the task rule and desktop host suites need only Node (24 was used here) and no npm install. The client boundary tests and the server-side cowork tests run under Vitest and need the Paseo workspace install (npm ci at the repo root).",
+      "zh": "目前沒有可以安裝的產品。在 clone 下來的 repo 裡，任務規則與桌面主機這兩組測試只需要 Node（這裡用的是 24 版），不用 npm install。客戶端邊界測試與 server 端的協作測試跑在 Vitest 上，要先在 repo 根目錄執行 npm ci，裝好整個 Paseo workspace。"
     },
     "primary": {"href": "https://github.com/teddashh/bat-cowork/blob/main/docs/cowork/RELEASE-GATE.md", "label": {"en": "Release gate", "zh": "發行關卡"}},
     "secondary": {"href": "https://github.com/teddashh/bat-cowork/blob/main/BAT-COWORK.md", "label": {"en": "Project notes", "zh": "專案說明"}},
@@ -228,8 +228,8 @@
       },
       {
         "title": {"en": "Read-only client boundary: 7 tests", "zh": "唯讀客戶端邊界：7 個測試"},
-        "body": {"en": "From the repo root. Checks that writes are not reachable and auth headers stay in one module.", "zh": "從 repo 根目錄執行。確認寫入方法拿不到，驗證標頭也只在一個模組裡處理。"},
-        "code": "cd packages/client\nnode --experimental-strip-types \\\n  --test src/cowork/*.test.ts"
+        "body": {"en": "From the repo root, after npm ci. Runs under Vitest and checks that writes are not reachable and auth headers stay in one module.", "zh": "從 repo 根目錄執行，要先跑過 npm ci。測試跑在 Vitest 上，確認寫入方法拿不到，驗證標頭也只在一個模組裡處理。"},
+        "code": "cd packages/client\nnpx vitest run src/cowork"
       },
       {
         "title": {"en": "Desktop host refusals: 5 tests", "zh": "桌面主機的拒絕行為：5 個測試"},
@@ -242,8 +242,8 @@
     "kicker": {"en": "Honest status", "zh": "誠實的現況"},
     "title": {"en": "Where it stands.", "zh": "目前的樣子。"},
     "intro": {
-      "en": "Work began on 2026-09-30, and the tree is still changing quickly. There are no tags or releases, and the Paseo CI workflows that came with the tree fail here. Paseo is by Mohamed Boudra and contributors; BAT is by TonyQ. This is not an official build of either.",
-      "zh": "2026 年 9 月 30 日才開始，程式碼還在快速變動。沒有任何 tag 或正式版本，跟著原始碼一起來的 Paseo CI 流程在這裡也是失敗的。Paseo 的作者是 Mohamed Boudra 與其貢獻者，BAT 的作者是 TonyQ；本專案不是兩者的官方版本。"
+      "en": "Work began on 2026-09-30, and the tree is still changing quickly. There are no tags or releases. CI on main runs Paseo's suites and the cowork tests; a few end-to-end tests inherited from Paseo fail now and then and pass on a rerun. Paseo is by Mohamed Boudra and contributors; BAT is by TonyQ. This is not an official build of either.",
+      "zh": "2026 年 9 月 30 日才開始，程式碼還在快速變動。沒有任何 tag 或正式版本。main 的 CI 會跑 Paseo 原有的測試與協作測試；有幾個從 Paseo 帶來的端對端測試偶爾失敗，重跑就會通過。Paseo 的作者是 Mohamed Boudra 與其貢獻者，BAT 的作者是 TonyQ；本專案不是兩者的官方版本。"
     },
     "works_title": {"en": "Works on a local test daemon", "zh": "在本機測試 daemon 上可用"},
     "works": [
@@ -251,7 +251,7 @@
       {"en": "Two clients see one run; a repeated message id does not start a second turn; a daemon-made worktree receives the commit", "zh": "兩個客戶端看到同一次執行；重複的 message id 不會開第二輪；commit 落在 daemon 建立的 worktree"},
       {"en": "Pause, takeover, rework, and restart paths in the task reducer, with a journal that survives a daemon restart", "zh": "任務 reducer 的暫停、接手、重做與重啟流程，帳本在 daemon 重啟後仍在"},
       {"en": "A browser shell that reads workspaces, files, diff, and commit history from a local daemon", "zh": "瀏覽器版可以從本機 daemon 讀取工作區、檔案、diff 與 commit 紀錄"},
-      {"en": "29 tests that need no install pass in a local run: 17 task core, 7 client boundary, 5 desktop host", "zh": "不需安裝的 29 個測試在本機全數通過：任務核心 17 個、客戶端邊界 7 個、桌面主機 5 個"}
+      {"en": "29 cowork tests pass in a local run and in CI: 17 task core and 5 desktop host that need no install, plus 7 client boundary under Vitest", "zh": "29 個協作測試在本機與 CI 都通過：不需安裝的任務核心 17 個、桌面主機 5 個，加上跑在 Vitest 上的客戶端邊界 7 個"}
     ],
     "limits_title": {"en": "Not done, and not safe yet", "zh": "還沒完成，也還不安全"},
     "limits": [
@@ -259,7 +259,7 @@
       {"en": "The Tauri shell has not been built: the one compile attempt stopped in glib-sys because pkg-config was missing, so there is no desktop window yet", "zh": "Tauri 版還沒建置成功：唯一一次編譯在 glib-sys 就失敗了（環境裡沒有 pkg-config），所以還沒有桌面視窗"},
       {"en": "No agent provider is admitted: Claude, Codex, and Grok stay closed, and every turn in the tests comes from a fake Claude client", "zh": "沒有任何 agent 供應者獲准：Claude、Codex、Grok 都還關著，測試裡的每一輪都來自假的 Claude 客戶端"},
       {"en": "Only 2 of Paseo's 90 inbound write messages pass the cowork gate; the other 88 are not wired", "zh": "Paseo 的 90 種寫入訊息裡，只有 2 種經過協作關卡，其餘 88 種還沒接上"},
-      {"en": "No client message opens a task or sends an instruction yet, the terminal is refused, and the journal is one JSON file rewritten on every event", "zh": "還沒有客戶端訊息能開任務或下指令，終端機也被拒絕；帳本只是一個每次事件都整份重寫的 JSON 檔"},
+      {"en": "No client message opens a task or sends an instruction yet, the terminal is refused, and the journal is still one JSON file rewritten in full on every event", "zh": "還沒有客戶端訊息能開任務或下指令，終端機也被拒絕；帳本仍是一個每次事件都整份重寫的 JSON 檔"},
       {"en": "Workspace scope is an upstream gap: Paseo grants are daemon-wide, and file preview accepts any file the daemon can read", "zh": "工作區範圍是上游的缺口：Paseo 的授權是整個 daemon 層級，檔案預覽也接受 daemon 讀得到的任何檔案"}
     ]
   },
@@ -269,7 +269,7 @@
     {"label": {"en": "License", "zh": "授權"}, "value": {"en": "Apache 2.0 · BAT UI MIT", "zh": "Apache 2.0 · BAT 介面 MIT"}},
     {"label": {"en": "Stack", "zh": "技術"}, "value": "TypeScript · Node · Tauri"},
     {"label": {"en": "Release gate", "zh": "發行關卡"}, "value": {"en": "1 of 7 accepted", "zh": "7 個通過 1 個"}},
-    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-09-30"}
+    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-10-01"}
   ],
   "links": [
     {"href": "https://github.com/getpaseo/paseo", "label": {"en": "Paseo by Mohamed Boudra", "zh": "Paseo（作者 Mohamed Boudra）"}},
