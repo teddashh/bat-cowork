@@ -2311,7 +2311,8 @@ export class Session {
       this.dispatchScheduleMessage(msg) ??
       this.dispatchCoworkMessage(msg) ??
       this.dispatchMiscMessage(msg);
-    if (promise) await promise;
+    // The chain ends with the async dispatchMiscMessage, so there is always a promise here.
+    await promise;
   }
 
   private dispatchCoworkMessage(msg: SessionInboundMessage): Promise<void> | undefined {

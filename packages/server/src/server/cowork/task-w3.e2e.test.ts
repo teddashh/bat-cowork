@@ -26,7 +26,10 @@ function gitRepo(root: string): string {
   return repoDir;
 }
 
-async function waitFor(id: string, ready: (phase: string, rework: number, revision: number) => boolean) {
+async function waitFor(
+  id: string,
+  ready: (phase: string, rework: number, revision: number) => boolean,
+) {
   const started = Date.now();
   while (Date.now() - started < 5000) {
     const state = readTask(id)?.state;
@@ -55,7 +58,11 @@ test("a restart reconciles an inflight command and holds send", async () => {
     await client.connect();
     const created = await client.createWorkspace({ source: { kind: "directory", path: repoDir } });
     expect(created.error ?? null).toBeNull();
-    const agent = await client.createAgent({ provider: "claude", cwd: repoDir, model: "test-model" });
+    const agent = await client.createAgent({
+      provider: "claude",
+      cwd: repoDir,
+      model: "test-model",
+    });
     agentId = agent.id;
     await openTask({
       home: first.paseoHome,
@@ -90,7 +97,9 @@ test("a restart reconciles an inflight command and holds send", async () => {
       await again.connect();
       expect(readTask("task-inflight")?.state.activeCommand?.outcome).toBe("unknown");
       expect(readTask("task-inflight")?.state.phase).not.toBe("verified");
-      await expect(again.sendAgentMessage(agentId, "keep going")).rejects.toThrow(/cowork gate: held/);
+      await expect(again.sendAgentMessage(agentId, "keep going")).rejects.toThrow(
+        /cowork gate: held/,
+      );
     } finally {
       await again.close().catch(() => undefined);
       await second.close();
@@ -133,7 +142,11 @@ test("a failed turn reworks, and a later instruction is not closed by the old co
   try {
     await client.connect();
     const created = await client.createWorkspace({ source: { kind: "directory", path: repoDir } });
-    const agent = await client.createAgent({ provider: "claude", cwd: repoDir, model: "test-model" });
+    const agent = await client.createAgent({
+      provider: "claude",
+      cwd: repoDir,
+      model: "test-model",
+    });
     agentId = agent.id;
     await openTask({
       home: daemon.paseoHome,
@@ -156,7 +169,10 @@ test("a failed turn reworks, and a later instruction is not closed by the old co
     expect(turns).toBe(1);
 
     await client.sendAgentMessage(agentId, "commit");
-    const first = await waitFor("task-append", (phase, _rework, revision) => phase === "verified" && revision === 1);
+    const first = await waitFor(
+      "task-append",
+      (phase, _rework, revision) => phase === "verified" && revision === 1,
+    );
     const firstCommit = first.evidence?.commit;
     expect(firstCommit).toEqual(expect.any(String));
 
@@ -174,7 +190,10 @@ test("a failed turn reworks, and a later instruction is not closed by the old co
     expect(readTask("task-append")?.state.evidence?.commit).toBe(firstCommit);
 
     await client.sendAgentMessage(agentId, "commit again");
-    const second = await waitFor("task-append", (phase, _rework, revision) => phase === "verified" && revision === 2);
+    const second = await waitFor(
+      "task-append",
+      (phase, _rework, revision) => phase === "verified" && revision === 2,
+    );
     expect(second.evidence?.commit).not.toBe(firstCommit);
     expect(turns).toBe(3);
   } finally {

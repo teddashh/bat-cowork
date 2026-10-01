@@ -20,20 +20,20 @@ The caller keeps the `PaseoClient` for `connect` / `close`. This facade does not
 
 From `createPaseoApi` in `packages/client/src/index.ts`:
 
-| Facade | Public method | What it actually calls |
-| --- | --- | --- |
-| `workspaces.list` | `workspaces.list` | `DaemonClient.fetchWorkspaces` when `subscribe` is omitted |
-| `workspaces.ref().current` / `.refresh` | same names on `PaseoWorkspaceHandle` | `refresh` pages `fetchWorkspaces` |
-| `agents.list` | `agents.list` | `DaemonClient.fetchAgents` when `subscribe` is omitted |
-| `agents.ref().refresh` | `agents.ref().refresh` | `DaemonClient.fetchAgent`. There is no public `fetchAgent`. |
-| `agents.ref().current` | `agents.ref().current` | last snapshot on the handle |
-| `agents.ref().timeline.refetch` | `timeline.refetch` | `DaemonClient.fetchAgentTimeline`. There is no public `fetchAgentTimeline`. |
-| `agents.ref().commands` | `commands` | `DaemonClient.listCommands` |
-| `projects.list` | `projects.list` | `DaemonClient.listProjects` |
+| Facade                                  | Public method                        | What it actually calls                                                      |
+| --------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------- |
+| `workspaces.list`                       | `workspaces.list`                    | `DaemonClient.fetchWorkspaces` when `subscribe` is omitted                  |
+| `workspaces.ref().current` / `.refresh` | same names on `PaseoWorkspaceHandle` | `refresh` pages `fetchWorkspaces`                                           |
+| `agents.list`                           | `agents.list`                        | `DaemonClient.fetchAgents` when `subscribe` is omitted                      |
+| `agents.ref().refresh`                  | `agents.ref().refresh`               | `DaemonClient.fetchAgent`. There is no public `fetchAgent`.                 |
+| `agents.ref().current`                  | `agents.ref().current`               | last snapshot on the handle                                                 |
+| `agents.ref().timeline.refetch`         | `timeline.refetch`                   | `DaemonClient.fetchAgentTimeline`. There is no public `fetchAgentTimeline`. |
+| `agents.ref().commands`                 | `commands`                           | `DaemonClient.listCommands`                                                 |
+| `projects.list`                         | `projects.list`                      | `DaemonClient.listProjects`                                                 |
 
 The facade returns new objects. It does not return the underlying workspace, agent, or terminal handle, so these public writes are not reachable from it: `workspaces.create`, `workspaces.open`, `workspaces.archive`, `setTitle`, `agents.create`, `send`, `run`, `respondToPermission`, `archive`, `detach`, `timeline.append`, `terminals.create`, `terminals.ref().write`, `terminals.ref().sendKeys` (stdin), `config.patch`.
 
-## Gaps — methods that do not exist on the public client
+## Gaps: methods that do not exist on the public client
 
 Do not add these names to the facade. They exist on `DaemonClient` only:
 
@@ -52,12 +52,12 @@ These public reads exist and are not forwarded in this pass: `workspaces.subscri
 
 ## Tests
 
-From `packages/client`, with no package install and no daemon:
+`cowork.test.ts` runs with the rest of the client tests under Vitest, so CI runs it in `sdk-tests`. From `packages/client`, with no daemon:
 
 ```
-node --experimental-strip-types --test src/cowork/*.test.ts
+npx vitest run src/cowork
 ```
 
-Node does not rewrite `.js` import specifiers to `.ts`. The test file registers `ts-js-specifier-hook.mjs` before loading these sources. That is a test harness, not a daemon test.
+That is a unit test, not a daemon test.
 
 This is not W1 acceptance.

@@ -2,9 +2,9 @@
   "name": "@bat-cowork/cowork-core",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "description": "Pure cowork rules. Not an npm workspace member yet. Does not open a socket, spawn an agent, or decide that a task is done.",
   "license": "Apache-2.0",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },

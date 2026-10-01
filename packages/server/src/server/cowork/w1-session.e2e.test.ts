@@ -11,7 +11,10 @@ test("closing the client leaves the daemon session, files, and diff in place", a
   const tempRoot = mkdtempSync(path.join(tmpdir(), "bat-cowork-w1-"));
   const repoDir = path.join(tempRoot, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -30,7 +33,11 @@ test("closing the client leaves the daemon session, files, and diff in place", a
     await first.connect();
     const created = await first.createWorkspace({ source: { kind: "directory", path: repoDir } });
     expect(created.error ?? null).toBeNull();
-    const agent = await first.createAgent({ provider: "claude", cwd: repoDir, model: "test-model" });
+    const agent = await first.createAgent({
+      provider: "claude",
+      cwd: repoDir,
+      model: "test-model",
+    });
     const port = new DaemonWorkspaceReadPort(first);
     const sessions = await port.listSessions();
     expect(sessions.some((session) => session.id === agent.id)).toBe(true);
@@ -47,7 +54,9 @@ test("closing the client leaves the daemon session, files, and diff in place", a
     await second.connect();
     const again = await new DaemonWorkspaceReadPort(second).listSessions();
     expect(again.some((session) => session.id === agent.id)).toBe(true);
-    const listed = JSON.parse((await new DaemonWorkspaceReadPort(second).listWorkspaces()) ?? "null") as {
+    const listed = JSON.parse(
+      (await new DaemonWorkspaceReadPort(second).listWorkspaces()) ?? "null",
+    ) as {
       workspaces: { folderPath: string }[];
     };
     expect(listed.workspaces.some((workspace) => workspace.folderPath === repoDir)).toBe(true);

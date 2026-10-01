@@ -52,7 +52,12 @@ export type TaskEvent =
   | { id: string; type: "comment"; actor: string; text: string }
   | { id: string; type: "proposal"; actor: string; text: string }
   | { id: string; type: "instruction"; actor: string; role: "driver" | "viewer"; text: string }
-  | { id: string; type: "control"; action: "pause" | "takeover" | "cancel" | "release"; actor: string }
+  | {
+      id: string;
+      type: "control";
+      action: "pause" | "takeover" | "cancel" | "release";
+      actor: string;
+    }
   | { id: string; type: "presence"; actor: string }
   | { id: string; type: "lease.expired" }
   | { id: string; type: "writer.settled"; epoch: number }
@@ -104,7 +109,13 @@ export function createTask(input: {
   };
 }
 
-function note(state: TaskState, eventId: string, kind: string, actor: string, text: string): TaskState {
+function note(
+  state: TaskState,
+  eventId: string,
+  kind: string,
+  actor: string,
+  text: string,
+): TaskState {
   return {
     ...state,
     timeline: [...state.timeline, { eventId, kind, actor, text }],
@@ -154,7 +165,10 @@ function reduce(state: TaskState, event: TaskEvent): StepResult {
     case "presence":
       return { state: note(state, event.id, "presence", event.actor, ""), intents: [] };
     case "lease.expired":
-      return { state: note(state, event.id, "lease.expired", "system", "lease expired; writer kept"), intents: [] };
+      return {
+        state: note(state, event.id, "lease.expired", "system", "lease expired; writer kept"),
+        intents: [],
+      };
     case "instruction":
       return instruct(state, event);
     case "control":
@@ -194,7 +208,13 @@ function reduce(state: TaskState, event: TaskEvent): StepResult {
     case "stream.ended":
     case "process.exited":
       return {
-        state: note(state, event.id, event.type, "runtime", event.type === "assistant.finished" ? event.text : event.type),
+        state: note(
+          state,
+          event.id,
+          event.type,
+          "runtime",
+          event.type === "assistant.finished" ? event.text : event.type,
+        ),
         intents: [],
       };
     case "verify.failed":
@@ -218,11 +238,17 @@ function reduce(state: TaskState, event: TaskEvent): StepResult {
   }
 }
 
-function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instruction" }>): StepResult {
+function instruct(
+  state: TaskState,
+  event: Extract<TaskEvent, { type: "instruction" }>,
+): StepResult {
   const sealed = state.phase === "cancelled" || state.phase === "rejected";
   const allowed = event.role === "driver" && event.actor === state.driverId && !sealed;
   if (!allowed) {
-    return { state: note(state, event.id, "instruction.rejected", event.actor, event.text), intents: [] };
+    return {
+      state: note(state, event.id, "instruction.rejected", event.actor, event.text),
+      intents: [],
+    };
   }
   const revision = state.revision + 1;
   const commandId = commandIdFor(event.id);
@@ -232,11 +258,17 @@ function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instructi
     revision,
     pendingInput: { revision, text: event.text },
     reworkAttempts: 0,
-    activeCommand: state.holdDispatch ? state.activeCommand : { id: commandId, outcome: "inflight" },
+    activeCommand: state.holdDispatch
+      ? state.activeCommand
+      : { id: commandId, outcome: "inflight" },
   };
   if (state.holdDispatch) {
     return {
-      state: withLiveness(next, { kind: "blocker", owner: state.driverId, reason: "dispatch-held" }),
+      state: withLiveness(next, {
+        kind: "blocker",
+        owner: state.driverId,
+        reason: "dispatch-held",
+      }),
       intents: [],
     };
   }
@@ -249,7 +281,10 @@ function instruct(state: TaskState, event: Extract<TaskEvent, { type: "instructi
 function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }>): StepResult {
   if (event.action === "pause" || event.action === "cancel") {
     if (event.actor !== state.driverId) {
-      return { state: note(state, event.id, "control.rejected", event.actor, event.action), intents: [] };
+      return {
+        state: note(state, event.id, "control.rejected", event.actor, event.action),
+        intents: [],
+      };
     }
   }
   if (event.action === "pause") {
@@ -291,11 +326,20 @@ function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }
   }
   if (state.phase === "paused") {
     if (event.actor !== state.driverId) {
-      return { state: note(state, event.id, "release.rejected", event.actor, "not the driver"), intents: [] };
+      return {
+        state: note(state, event.id, "release.rejected", event.actor, "not the driver"),
+        intents: [],
+      };
     }
     return {
       state: withLiveness(
-        note({ ...state, holdDispatch: false, phase: "active" }, event.id, "release", event.actor, ""),
+        note(
+          { ...state, holdDispatch: false, phase: "active" },
+          event.id,
+          "release",
+          event.actor,
+          "",
+        ),
         { kind: "wake", nextWakeAt: "after-release" },
       ),
       intents: [],
@@ -303,7 +347,10 @@ function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }
   }
   if (state.activeCommand?.outcome === "unknown") {
     if (event.actor !== state.driverId) {
-      return { state: note(state, event.id, "release.rejected", event.actor, "not the driver"), intents: [] };
+      return {
+        state: note(state, event.id, "release.rejected", event.actor, "not the driver"),
+        intents: [],
+      };
     }
     return {
       state: withLiveness(
@@ -321,12 +368,20 @@ function control(state: TaskState, event: Extract<TaskEvent, { type: "control" }
   }
   const settled = state.writerSettledEpoch === state.controlEpoch;
   if (!settled) {
-    return { state: note(state, event.id, "release.rejected", event.actor, "writer not settled"), intents: [] };
+    return {
+      state: note(state, event.id, "release.rejected", event.actor, "writer not settled"),
+      intents: [],
+    };
   }
   return {
     state: withLiveness(
       note(
-        { ...state, holdDispatch: false, phase: state.phase === "paused" ? "active" : state.phase, writerId: state.driverId },
+        {
+          ...state,
+          holdDispatch: false,
+          phase: state.phase === "paused" ? "active" : state.phase,
+          writerId: state.driverId,
+        },
         event.id,
         "release",
         event.actor,
@@ -342,10 +397,11 @@ function failVerify(state: TaskState, eventId: string): StepResult {
   if (TERMINAL.has(state.phase)) return { state, intents: [] };
   if (state.reworkAttempts >= state.maxRework) {
     return {
-      state: withLiveness(
-        note(state, eventId, "verify.failed", "verifier", "rework cap"),
-        { kind: "blocker", owner: "unassigned", reason: "rework-cap" },
-      ),
+      state: withLiveness(note(state, eventId, "verify.failed", "verifier", "rework cap"), {
+        kind: "blocker",
+        owner: "unassigned",
+        reason: "rework-cap",
+      }),
       intents: [],
     };
   }
@@ -366,13 +422,19 @@ function failVerify(state: TaskState, eventId: string): StepResult {
   };
 }
 
-function passVerify(state: TaskState, event: Extract<TaskEvent, { type: "verify.passed" }>): StepResult {
+function passVerify(
+  state: TaskState,
+  event: Extract<TaskEvent, { type: "verify.passed" }>,
+): StepResult {
   const sameCommit = state.evidence?.commit === event.evidence.commit;
   const matches =
     event.evidence.revision === state.revision && event.evidence.commit.length > 0 && !sameCommit;
   const unknown = state.activeCommand?.outcome === "unknown";
   if (!matches || unknown || state.holdDispatch || TERMINAL.has(state.phase)) {
-    return { state: note(state, event.id, "verify.rejected", "verifier", "evidence does not close"), intents: [] };
+    return {
+      state: note(state, event.id, "verify.rejected", "verifier", "evidence does not close"),
+      intents: [],
+    };
   }
   const outboxId = `out:${event.id}`;
   return {
@@ -403,7 +465,11 @@ export function claimWriter(
   return { ok: true, claims: { ...claims, [worktreeId]: taskId } };
 }
 
-export function dispatchAllowed(state: TaskState, actor: string, commandId: string): DispatchDecision {
+export function dispatchAllowed(
+  state: TaskState,
+  actor: string,
+  commandId: string,
+): DispatchDecision {
   return evaluateDispatch({
     actor,
     effect: "write",
@@ -414,7 +480,8 @@ export function dispatchAllowed(state: TaskState, actor: string, commandId: stri
     resourceWriter: state.writerId,
     actorIsWriter: actor === state.writerId && !state.holdDispatch,
     commandId,
-    alreadyDispatched: state.activeCommand?.id === commandId && state.activeCommand.outcome === "inflight",
+    alreadyDispatched:
+      state.activeCommand?.id === commandId && state.activeCommand.outcome === "inflight",
   });
 }
 

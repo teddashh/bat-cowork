@@ -1,6 +1,9 @@
 import { expect, test } from "vitest";
 import { createTask as bundledCreate, step as bundledStep } from "./reducer.js";
-import { createTask as sourceCreate, step as sourceStep } from "../../../../cowork-core/src/task-core.ts";
+import {
+  createTask as sourceCreate,
+  step as sourceStep,
+} from "../../../../cowork-core/src/task-core.ts";
 
 test("the bundled reducer matches cowork-core for pause, release, and verify", () => {
   const input = { id: "t", driverId: "driver", worktreeId: "wt" };

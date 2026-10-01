@@ -48,6 +48,9 @@ jobs:
         env:
           EP_GH_IGNORE_TIME: true
           PASEO_DESKTOP_SMOKE_ARTIFACT_DIR: ${{ runner.temp }}/desktop-smoke
+          # The Expo web export ran out of Node's default heap on this repo's runners;
+          # desktop-release.yml raises the heap for the same bundle.
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Smoke installed artifacts with restricted user namespaces
         run: |

@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { evaluateDispatch } from "../src/dispatch-policy.ts";
 import { SESSION_INGRESS } from "../src/session-ingress.ts";
-import { claimWriter, createTask, managedWriteFields, step, type TaskState } from "../src/task-core.ts";
+import {
+  claimWriter,
+  createTask,
+  managedWriteFields,
+  step,
+  type TaskState,
+} from "../src/task-core.ts";
 
 function base() {
   return createTask({ id: "t1", driverId: "hermes-a", worktreeId: "wt-a" });
@@ -95,13 +101,29 @@ test("unknown command is reconciled and not resent", () => {
   const unknown = step(started.state, { id: "u1", type: "command.unknown", commandId });
   assert.equal(unknown.state.activeCommand?.outcome, "unknown");
   assert.equal(unknown.state.holdDispatch, true);
-  assert.equal(unknown.intents.some((intent) => intent.type === "dispatch"), false);
+  assert.equal(
+    unknown.intents.some((intent) => intent.type === "dispatch"),
+    false,
+  );
   assert.equal(unknown.state.liveness.kind, "blocker");
-  const stranger = step(unknown.state, { id: "rel-x", type: "control", action: "release", actor: "ted" });
+  const stranger = step(unknown.state, {
+    id: "rel-x",
+    type: "control",
+    action: "release",
+    actor: "ted",
+  });
   assert.equal(stranger.state.holdDispatch, true);
-  const acked = step(unknown.state, { id: "rel-d", type: "control", action: "release", actor: "hermes-a" });
+  const acked = step(unknown.state, {
+    id: "rel-d",
+    type: "control",
+    action: "release",
+    actor: "hermes-a",
+  });
   assert.equal(acked.state.holdDispatch, false);
-  assert.equal(acked.intents.some((intent) => intent.type === "dispatch"), false);
+  assert.equal(
+    acked.intents.some((intent) => intent.type === "dispatch"),
+    false,
+  );
 });
 
 test("a verified task can take another instruction, and the old commit does not close it", () => {
@@ -164,7 +186,10 @@ test("presence and lease expiry do not take the writer; takeover holds dispatch 
   assert.equal(taken.state.controlEpoch, 2);
   assert.equal(taken.state.writerId, "hermes-a");
   assert.equal(taken.state.holdDispatch, true);
-  assert.equal(taken.intents.some((intent) => intent.type === "dispatch"), false);
+  assert.equal(
+    taken.intents.some((intent) => intent.type === "dispatch"),
+    false,
+  );
   const early = step(taken.state, {
     id: "i2",
     type: "instruction",
@@ -173,10 +198,20 @@ test("presence and lease expiry do not take the writer; takeover holds dispatch 
     text: "more",
   });
   assert.equal(early.intents.length, 0);
-  const rejected = step(taken.state, { id: "rel0", type: "control", action: "release", actor: "ted" });
+  const rejected = step(taken.state, {
+    id: "rel0",
+    type: "control",
+    action: "release",
+    actor: "ted",
+  });
   assert.equal(rejected.state.holdDispatch, true);
   const settled = step(taken.state, { id: "set", type: "writer.settled", epoch: 2 });
-  const released = step(settled.state, { id: "rel", type: "control", action: "release", actor: "ted" });
+  const released = step(settled.state, {
+    id: "rel",
+    type: "control",
+    action: "release",
+    actor: "ted",
+  });
   assert.equal(released.state.holdDispatch, false);
   assert.equal(released.state.writerId, "hermes-a");
 });
@@ -207,7 +242,12 @@ test("the driver can release their own pause without a takeover settle", () => {
     role: "driver",
     text: "fix",
   }).state;
-  const paused = step(instructed, { id: "p", type: "control", action: "pause", actor: "hermes-a" }).state;
+  const paused = step(instructed, {
+    id: "p",
+    type: "control",
+    action: "pause",
+    actor: "hermes-a",
+  }).state;
   const stranger = step(paused, { id: "r0", type: "control", action: "release", actor: "ted" });
   assert.equal(stranger.state.holdDispatch, true);
   assert.equal(stranger.state.phase, "paused");
@@ -257,7 +297,10 @@ test("one worktree has one writer, and dispatch policy denies a stale write", ()
     false,
   );
   assert.equal(
-    SESSION_INGRESS.filter((row) => row.gate === "managed-only").map((row) => row.type).sort().join(","),
+    SESSION_INGRESS.filter((row) => row.gate === "managed-only")
+      .map((row) => row.type)
+      .sort()
+      .join(","),
     "create_agent_request,send_agent_message_request",
   );
 });
@@ -273,8 +316,18 @@ test("a paused task holds the write target and a terminal task releases it", () 
   const open = managedWriteFields(instructed);
   assert.equal(open?.holdDispatch, false);
   assert.equal(open?.writerId, "hermes-a");
-  const paused = step(instructed, { id: "p", type: "control", action: "pause", actor: "hermes-a" }).state;
+  const paused = step(instructed, {
+    id: "p",
+    type: "control",
+    action: "pause",
+    actor: "hermes-a",
+  }).state;
   assert.equal(managedWriteFields(paused)?.holdDispatch, true);
-  const cancelled = step(paused, { id: "x", type: "control", action: "cancel", actor: "hermes-a" }).state;
+  const cancelled = step(paused, {
+    id: "x",
+    type: "control",
+    action: "cancel",
+    actor: "hermes-a",
+  }).state;
   assert.equal(managedWriteFields(cancelled), null);
 });

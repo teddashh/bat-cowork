@@ -120,6 +120,15 @@ jobs:
       - name: Verify built-in plugins from built output
         run: node --test scripts/builtin-plugins-dist.test.mjs
 
+      # bat-cowork packages outside the npm workspaces, so no workspace script runs their tests.
+      - name: Run cowork-core tests
+        working-directory: packages/cowork-core
+        run: node --experimental-strip-types --test test/*.test.ts
+
+      - name: Run BAT desktop host tests
+        working-directory: apps/bat-desktop
+        run: node --test test/*.test.mjs
+
       - name: Typecheck all packages
         run: npm run typecheck
 

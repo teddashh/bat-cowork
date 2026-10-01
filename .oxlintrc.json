@@ -3,7 +3,14 @@
   "options": {
     "typeAware": false
   },
-  "ignorePatterns": [".dev/**"],
+  "ignorePatterns": [
+    ".dev/**",
+    // Generated GitHub Pages output.
+    "site/**",
+    // Separate app outside the npm workspaces. Most of it is imported from Better Agent
+    // Terminal and keeps that project's code style.
+    "apps/bat-desktop/**"
+  ],
   "plugins": ["react", "react-perf", "unicorn", "typescript", "oxc", "import", "promise"],
   "categories": {
     "correctness": "error",

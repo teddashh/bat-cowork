@@ -120,7 +120,9 @@ test("a paused task survives the client, then one turn and a real commit can ver
       clientId: "client-b",
     });
     await second.connect();
-    await expect(second.sendAgentMessage(agentId, "do it again")).rejects.toThrow(/cowork gate: held/);
+    await expect(second.sendAgentMessage(agentId, "do it again")).rejects.toThrow(
+      /cowork gate: held/,
+    );
     expect(turns).toBe(0);
     await second.close();
 

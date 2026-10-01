@@ -7,34 +7,25 @@ export interface CheckoutDiffCompare {
 }
 
 export interface DaemonReadSource {
-  fetchWorkspaces(options?: { requestId?: string }): Promise<{ entries: readonly { id: string }[] }>;
-  fetchAgents(options?: { requestId?: string }): Promise<unknown>;
-  listDirectory(cwd: string, path: string, requestId?: string): Promise<unknown>;
-  readFile(
-    cwd: string,
-    path: string,
-    requestId?: string,
-    maxBytes?: number,
-  ): Promise<unknown>;
-  getCheckoutStatus(cwd: string, options?: { requestId?: string }): Promise<unknown>;
-  getCheckoutDiff(
-    cwd: string,
-    compare: CheckoutDiffCompare,
-    requestId?: string,
-  ): Promise<unknown>;
-}
-
-export interface DaemonReadView {
-  fetchWorkspaces(options?: { requestId?: string }): Promise<{ entries: readonly { id: string }[] }>;
+  fetchWorkspaces(options?: {
+    requestId?: string;
+  }): Promise<{ entries: readonly { id: string }[] }>;
   fetchAgents(options?: { requestId?: string }): Promise<unknown>;
   listDirectory(cwd: string, path: string, requestId?: string): Promise<unknown>;
   readFile(cwd: string, path: string, requestId?: string, maxBytes?: number): Promise<unknown>;
   getCheckoutStatus(cwd: string, options?: { requestId?: string }): Promise<unknown>;
-  getCheckoutDiff(
-    cwd: string,
-    compare: CheckoutDiffCompare,
-    requestId?: string,
-  ): Promise<unknown>;
+  getCheckoutDiff(cwd: string, compare: CheckoutDiffCompare, requestId?: string): Promise<unknown>;
+}
+
+export interface DaemonReadView {
+  fetchWorkspaces(options?: {
+    requestId?: string;
+  }): Promise<{ entries: readonly { id: string }[] }>;
+  fetchAgents(options?: { requestId?: string }): Promise<unknown>;
+  listDirectory(cwd: string, path: string, requestId?: string): Promise<unknown>;
+  readFile(cwd: string, path: string, requestId?: string, maxBytes?: number): Promise<unknown>;
+  getCheckoutStatus(cwd: string, options?: { requestId?: string }): Promise<unknown>;
+  getCheckoutDiff(cwd: string, compare: CheckoutDiffCompare, requestId?: string): Promise<unknown>;
 }
 
 // Forwards only daemon read methods. createWorkspace, sendAgentMessage, and

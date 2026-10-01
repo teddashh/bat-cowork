@@ -13,7 +13,10 @@ import { applyTask, forgetJournal, openTask, readTask } from "./journal.js";
 function gitRepo(root: string): string {
   const repoDir = path.join(root, "repo");
   execFileSync("git", ["init", "-b", "main", repoDir], { stdio: "pipe" });
-  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], { cwd: repoDir, stdio: "pipe" });
+  execFileSync("git", ["config", "user.email", "test@bat-cowork.local"], {
+    cwd: repoDir,
+    stdio: "pipe",
+  });
   execFileSync("git", ["config", "user.name", "BAT Cowork Test"], { cwd: repoDir, stdio: "pipe" });
   writeFileSync(path.join(repoDir, "README.md"), "base\n");
   execFileSync("git", ["add", "README.md"], { cwd: repoDir, stdio: "pipe" });
@@ -24,9 +27,15 @@ function gitRepo(root: string): string {
   return repoDir;
 }
 
-function streamEvent(message: TimelineMessage): { type: string; request?: { id: string }; item?: { type?: string; text?: string } } | null {
+function streamEvent(
+  message: TimelineMessage,
+): { type: string; request?: { id: string }; item?: { type?: string; text?: string } } | null {
   if (message.type !== "agent_stream") return null;
-  return message.payload.event as { type: string; request?: { id: string }; item?: { type?: string; text?: string } };
+  return message.payload.event as {
+    type: string;
+    request?: { id: string };
+    item?: { type?: string; text?: string };
+  };
 }
 
 async function until(ready: () => boolean, label: string): Promise<void> {
@@ -89,17 +98,26 @@ test("the other client sees the permission and the reply, and the same id does n
     const subscription = observer.subscribeAgentTimeline(agentId, (message) => {
       const event = streamEvent(message);
       if (!event) return;
-      if (event.type === "permission_requested" && event.request?.id) permissionId = event.request.id;
-      if (event.type === "timeline" && event.item?.type === "assistant_message" && event.item.text) {
+      if (event.type === "permission_requested" && event.request?.id)
+        permissionId = event.request.id;
+      if (
+        event.type === "timeline" &&
+        event.item?.type === "assistant_message" &&
+        event.item.text
+      ) {
         seen.push(event.item.text);
       }
     });
     stop = () => {
       void subscription.release();
     };
-    await app.sendAgentMessage(agentId, "rm -f permission.txt\nrespond with exactly: same-run-marker", {
-      messageId: "key-stream",
-    });
+    await app.sendAgentMessage(
+      agentId,
+      "rm -f permission.txt\nrespond with exactly: same-run-marker",
+      {
+        messageId: "key-stream",
+      },
+    );
     await until(() => permissionId.length > 0, "permission");
     await app.respondToPermission(agentId, permissionId, { behavior: "allow" });
     await until(() => seen.join("").includes("same-run-marker"), "reply");
@@ -126,7 +144,10 @@ test("the other client sees the permission and the reply, and the same id does n
 test("a daemon worktree gets the commit and the main checkout does not", async () => {
   const root = mkdtempSync(path.join(tmpdir(), "bat-cowork-w2-tree-"));
   const repoDir = gitRepo(root);
-  const mainHead = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoDir, encoding: "utf8" }).trim();
+  const mainHead = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: repoDir,
+    encoding: "utf8",
+  }).trim();
   let worktree = "";
   const daemon = await createTestPaseoDaemon({
     agentClients: {
@@ -157,7 +178,11 @@ test("a daemon worktree gets the commit and the main checkout does not", async (
     worktree = created.workspace?.workspaceDirectory ?? "";
     expect(worktree).not.toBe("");
     expect(worktree).not.toBe(repoDir);
-    const agent = await client.createAgent({ provider: "claude", cwd: worktree, model: "test-model" });
+    const agent = await client.createAgent({
+      provider: "claude",
+      cwd: worktree,
+      model: "test-model",
+    });
     agentId = agent.id;
     await openTask({
       home: daemon.paseoHome,
@@ -181,9 +206,14 @@ test("a daemon worktree gets the commit and the main checkout does not", async (
       await new Promise((resolve) => setTimeout(resolve, 20));
     }
     expect(readTask("task-tree")?.state.phase).toBe("verified");
-    const treeHead = execFileSync("git", ["rev-parse", "HEAD"], { cwd: worktree, encoding: "utf8" }).trim();
+    const treeHead = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: worktree,
+      encoding: "utf8",
+    }).trim();
     expect(treeHead).not.toBe(mainHead);
-    expect(execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoDir, encoding: "utf8" }).trim()).toBe(mainHead);
+    expect(
+      execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoDir, encoding: "utf8" }).trim(),
+    ).toBe(mainHead);
   } finally {
     if (agentId) syncManagedAgent(agentId, null);
     await forgetJournal();

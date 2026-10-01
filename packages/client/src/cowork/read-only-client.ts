@@ -126,9 +126,7 @@ export function assertReadOnly(method: string): void {
     .filter((token) => token.length > 0);
   const hit = tokens.find((token) => WRITE_METHOD_TOKENS.has(token));
   if (hit) {
-    throw new Error(
-      `Read-only cowork client refuses "${method}" because it is a write (${hit}).`,
-    );
+    throw new Error(`Read-only cowork client refuses "${method}" because it is a write (${hit}).`);
   }
 }
 

@@ -1,17 +1,15 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { register } from "node:module";
-import test from "node:test";
-import type { PublicReadSource } from "./read-only-client.ts";
-
-register(new URL("./ts-js-specifier-hook.mjs", import.meta.url));
-
-const { createNativeDaemonTransport } = await import("./tauri-transport.ts");
-const { PUBLIC_CLIENT_READ_GAPS, assertReadOnly, createReadOnlyPaseoClient } = await import(
-  "./read-only-client.ts"
-);
-const { defaultWebSocketFactory } = await import("../daemon-client-websocket-transport.ts");
-const entryModule = await import("./index.ts");
+import { test } from "vitest";
+import { defaultWebSocketFactory } from "../daemon-client-websocket-transport.js";
+import * as entryModule from "./index.js";
+import {
+  PUBLIC_CLIENT_READ_GAPS,
+  assertReadOnly,
+  createReadOnlyPaseoClient,
+  type PublicReadSource,
+} from "./read-only-client.js";
+import { createNativeDaemonTransport } from "./tauri-transport.js";
 
 function fakeSocket() {
   return {

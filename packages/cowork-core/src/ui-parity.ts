@@ -28,7 +28,15 @@ export const UI_PARITY: readonly ParityRow[] = [
     status: "missing",
     evidence: "append does not accept instruction; nothing consumes the dispatch intent",
   },
-  { surface: "claude-provider", status: "not-admitted", evidence: "assertProviderAdmitted('claude')" },
-  { surface: "codex-provider", status: "not-admitted", evidence: "assertProviderAdmitted('codex')" },
+  {
+    surface: "claude-provider",
+    status: "not-admitted",
+    evidence: "assertProviderAdmitted('claude')",
+  },
+  {
+    surface: "codex-provider",
+    status: "not-admitted",
+    evidence: "assertProviderAdmitted('codex')",
+  },
   { surface: "grok-provider", status: "not-admitted", evidence: "assertProviderAdmitted('grok')" },
 ];

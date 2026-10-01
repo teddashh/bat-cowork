@@ -35,7 +35,12 @@ export type TaskEvent =
   | { id: string; type: "comment"; actor: string; text: string }
   | { id: string; type: "proposal"; actor: string; text: string }
   | { id: string; type: "instruction"; actor: string; role: "driver" | "viewer"; text: string }
-  | { id: string; type: "control"; action: "pause" | "takeover" | "cancel" | "release"; actor: string }
+  | {
+      id: string;
+      type: "control";
+      action: "pause" | "takeover" | "cancel" | "release";
+      actor: string;
+    }
   | { id: string; type: "presence"; actor: string }
   | { id: string; type: "lease.expired" }
   | { id: string; type: "writer.settled"; epoch: number }
@@ -49,7 +54,12 @@ export type TaskEvent =
 
 export interface StepResult {
   state: TaskState;
-  intents: readonly { type: "dispatch" | "repair" | "notify"; commandId?: string; revision?: number; outboxId?: string }[];
+  intents: readonly {
+    type: "dispatch" | "repair" | "notify";
+    commandId?: string;
+    revision?: number;
+    outboxId?: string;
+  }[];
 }
 
 export function createTask(input: {
