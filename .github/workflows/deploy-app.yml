@@ -11,6 +11,8 @@ on:
 
 jobs:
   deploy:
+    # Deploys the web app to the upstream Cloudflare Pages account; that token exists only upstream.
+    if: github.repository == 'getpaseo/paseo'
     runs-on: ubuntu-latest
 
     steps:

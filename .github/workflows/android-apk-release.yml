@@ -21,6 +21,8 @@ env:
 
 jobs:
   ensure-release:
+    # Creates the GitHub Release for upstream Paseo builds; this fork publishes no releases.
+    if: github.repository == 'getpaseo/paseo'
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -64,6 +66,8 @@ jobs:
 
   publish-android-apk:
     needs: [ensure-release]
+    # Builds with the upstream Expo token and uploads to an upstream release.
+    if: github.repository == 'getpaseo/paseo'
     permissions:
       contents: write
       packages: read

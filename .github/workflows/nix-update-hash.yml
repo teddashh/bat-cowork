@@ -23,6 +23,8 @@ permissions:
 
 jobs:
   update-hash:
+    # Pushes hash commits as the upstream Paseo bot app, whose secrets exist only upstream; the Nix workflow still builds here.
+    if: github.repository == 'getpaseo/paseo'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/create-github-app-token@v1

@@ -137,7 +137,8 @@ jobs:
 
   publish:
     needs: setup
-    if: needs.setup.outputs.publish == 'true'
+    # Pushes Paseo release images to GHCR, which only upstream Paseo publishes; this fork only builds the image.
+    if: github.repository == 'getpaseo/paseo' && needs.setup.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read

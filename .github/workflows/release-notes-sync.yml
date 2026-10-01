@@ -26,6 +26,8 @@ concurrency:
 
 jobs:
   sync-release-notes:
+    # Creates and edits GitHub Releases for upstream Paseo; this fork publishes no releases.
+    if: github.repository == 'getpaseo/paseo'
     runs-on: ubuntu-latest
     permissions:
       contents: write
