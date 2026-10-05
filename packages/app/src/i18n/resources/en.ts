@@ -22,6 +22,7 @@ export const en = {
     total: "{{total}} matches",
   },
   common: {
+    bottomSheetBackdrop: "Bottom sheet backdrop",
     back: "Back",
     loading: "Loading...",
     actions: {
@@ -1155,6 +1156,9 @@ export const en = {
       settings: "Settings",
       closeSidebar: "Close sidebar",
     },
+    footer: {
+      usage: "Usage",
+    },
     help: {
       trigger: "Help and support",
       sectionHelp: "Help",
@@ -1646,6 +1650,17 @@ export const en = {
       title: "Password for {{host}}",
       label: "Host password",
     },
+    hostConfirmation: {
+      title: "Connect to this host?",
+      description:
+        "This host will be able to run code in this app and reach your other connected hosts. Only connect if you recognize it.",
+      descriptionChanged:
+        "This link changes how you connect to this host. The host will be able to run code in this app and reach your other connected hosts. Only connect if you recognize it.",
+      hostLabel: "Host",
+      fingerprintLabel: "Key fingerprint",
+      relayLabel: "Relay",
+      connect: "Connect",
+    },
     connectionMethods: {
       title: "Add connection",
       direct: {
@@ -1712,6 +1727,12 @@ export const en = {
       helper: "Connect to a Paseo daemon running on the remote host.",
       fields: {
         target: "SSH host",
+        password: "Daemon password",
+        optional: "Optional",
+      },
+      passwordVisibility: {
+        show: "Show password",
+        hide: "Hide password",
       },
       actions: {
         cancel: "Cancel",
@@ -1941,6 +1962,8 @@ export const en = {
     dismiss: "Dismiss",
   },
   contextWindow: {
+    noData: "No context data",
+    accessibilityNoData: "Context window: No context data",
     title: "Context window",
     used: "{{percentage}}% used",
     tokens: "{{used}} / {{max}} tokens",
@@ -2292,8 +2315,15 @@ export const en = {
         description: "Show an outline for jumping between prompts",
       },
       sidebar: {
-        title: "Sidebar",
-        description: "Choose which items appear at the top of the sidebar and in what order",
+        header: {
+          title: "Header",
+          description: "Choose which items appear at the top of the sidebar and in what order",
+        },
+        footer: {
+          title: "Footer",
+          description:
+            "Choose which rows appear at the bottom of the sidebar and in what order. Add project and the icon row always show",
+        },
         moveUp: "Move up",
         moveDown: "Move down",
       },

@@ -1,5 +1,6 @@
-// Inbound Session cases at paseo 53ee9cd9930d9479af318c1ed29713a0bfb5f47b.
+// Inbound Session cases at paseo cf2b3f4bb31c8f6041b156d9da54c06fea12c86f.
 // Source file: packages/server/src/server/session.ts (switch lines 2300-3200).
+// cf2b3f4 dropped agent.resolve_usage_report.request. The other rows are unchanged.
 // gate is managed-only when Session calls authorizeCoworkWrite for that case.
 // Unregistered agents still take the stock path. Every other case stays not-wired.
 
@@ -285,12 +286,6 @@ export const SESSION_INGRESS: readonly SessionIngress[] = [
   { type: "provider_diagnostic_request", lane: "session", effect: "read", gate: "not-wired" },
   { type: "provider.usage.list.request", lane: "session", effect: "read", gate: "not-wired" },
   { type: "usage.list_reports.request", lane: "session", effect: "read", gate: "not-wired" },
-  {
-    type: "agent.resolve_usage_report.request",
-    lane: "session",
-    effect: "read",
-    gate: "not-wired",
-  },
   { type: "start_workspace_script_request", lane: "session", effect: "write", gate: "not-wired" },
   { type: "workspace.script.list.request", lane: "session", effect: "read", gate: "not-wired" },
   { type: "workspace.script.start.request", lane: "session", effect: "write", gate: "not-wired" },

@@ -28,7 +28,7 @@ test("session ingress matches the locked Session switch", () => {
   const fromSource = sessionCases(source);
   const fromTable = SESSION_INGRESS.map((row) => row.type);
   assert.deepEqual(fromTable, fromSource);
-  assert.equal(SESSION_INGRESS.length, 162);
+  assert.equal(SESSION_INGRESS.length, 161);
   const managed = SESSION_INGRESS.filter((row) => row.gate === "managed-only").map(
     (row) => row.type,
   );

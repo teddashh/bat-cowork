@@ -12,7 +12,7 @@
 
 ## 這個 repo 是什麼
 
-這是 Paseo 的衍生專案，基礎是 Paseo 的 commit `53ee9cd`（Paseo 0.10.0）。Paseo 的 server、client、協定與 CLI 都留在上游原本的路徑，這個 repo 另外加了：
+這是 Paseo 的衍生專案，基礎是 Paseo 的 commit `cf2b3f4`（Paseo 0.11.0-beta.4）。這個 fork 一開始的快照是 `53ee9cd`（Paseo 0.10.0）。Paseo 的 server、client、協定與 CLI 都留在上游原本的路徑，這個 repo 另外加了：
 
 - `apps/bat-desktop`：從 Better Agent Terminal 的 `41ea2b1` 匯入的 BAT 介面，加上一個新的 Tauri crate，使用自己的 app id，沒有自動更新。Tauri 版還編譯不過，目前是瀏覽器版能讀取本機的 daemon。
 - `packages/cowork-core`：任務規則（每個任務一位主導者，旁觀者可以留言與提案）、派工規則，以及 Paseo 傳入訊息的清單。
