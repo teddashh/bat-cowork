@@ -1,14 +1,14 @@
 {
   "product": "bat-cowork",
-  "lockedAt": "2026-09-29",
+  "lockedAt": "2026-10-05",
   "note": "Analysis baseline. Not a build lockfile and not a claim that the snapshot is production-ready.",
   "upstreams": {
     "paseo": {
       "remote": "https://github.com/getpaseo/paseo",
-      "commit": "53ee9cd9930d9479af318c1ed29713a0bfb5f47b",
+      "commit": "cf2b3f4bb31c8f6041b156d9da54c06fea12c86f",
       "role": "primary fork; server, client, protocol, CLI stay on upstream paths",
       "license": "Apache-2.0 plus third-party notices in the upstream tree",
-      "packageVersionAtLock": "0.10.0"
+      "packageVersionAtLock": "0.11.0-beta.4"
     },
     "better-agent-terminal": {
       "remote": "https://github.com/tony1223/better-agent-terminal",
@@ -26,7 +26,7 @@
   },
   "transport": {
     "clientPackage": "@getpaseo/client",
-    "clientVersion": "0.10.0",
+    "clientVersion": "0.11.0-beta.4",
     "publicEntryHasTransportFactory": false,
     "internalEntry": "@getpaseo/client/internal/daemon-client",
     "webSocketFactories": [

@@ -6,7 +6,8 @@ bat-cowork is a derivative work. It is not an official Paseo, Better Agent Termi
 
 The server, client, protocol, CLI, and the rest of the upstream tree come from
 [getpaseo/paseo](https://github.com/getpaseo/paseo) at commit
-`53ee9cd9930d9479af318c1ed29713a0bfb5f47b`.
+`cf2b3f4bb31c8f6041b156d9da54c06fea12c86f` (Paseo 0.11.0-beta.4).
+The fork started from `53ee9cd9930d9479af318c1ed29713a0bfb5f47b`.
 
 Copyright (c) 2025-present Mohamed Boudra and other Paseo contributors.
 

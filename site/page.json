@@ -5,7 +5,7 @@
   "mark": "BC",
   "palette": "lime",
   "default_branch": "main",
-  "verified": "2026-10-01",
+  "verified": "2026-10-05",
   "language": "TypeScript",
   "license": {
     "label": {"en": "License", "zh": "授權"},
@@ -151,7 +151,7 @@
         "name": {"en": "Paseo daemon", "zh": "Paseo daemon"},
         "core": true,
         "lines": [
-          "Paseo 0.10.0 · 53ee9cd",
+          "Paseo 0.11.0-beta.4 · cf2b3f4",
           {"en": "Task journal, send gate", "zh": "任務帳本、送出關卡"},
           "cowork.tasks.list / append"
         ]
@@ -247,7 +247,7 @@
     },
     "works_title": {"en": "Works on a local test daemon", "zh": "在本機測試 daemon 上可用"},
     "works": [
-      {"en": "W0 accepted: the Paseo snapshot at 53ee9cd, upstream-lock.json, third-party notices, and the inventories in cowork-core", "zh": "W0 已通過：Paseo 53ee9cd 快照、upstream-lock.json、第三方聲明，以及 cowork-core 裡的各項清單"},
+      {"en": "W0 accepted the original Paseo snapshot at 53ee9cd, upstream-lock.json, third-party notices, and the inventories in cowork-core. This tree now follows cf2b3f4", "zh": "W0 已通過原本的 Paseo 53ee9cd 快照、upstream-lock.json、第三方聲明，以及 cowork-core 裡的各項清單。目前這棵樹跟到 cf2b3f4"},
       {"en": "Two clients see one run; a repeated message id does not start a second turn; a daemon-made worktree receives the commit", "zh": "兩個客戶端看到同一次執行；重複的 message id 不會開第二輪；commit 落在 daemon 建立的 worktree"},
       {"en": "Pause, takeover, rework, and restart paths in the task reducer, with a journal that survives a daemon restart", "zh": "任務 reducer 的暫停、接手、重做與重啟流程，帳本在 daemon 重啟後仍在"},
       {"en": "A browser shell that reads workspaces, files, diff, and commit history from a local daemon", "zh": "瀏覽器版可以從本機 daemon 讀取工作區、檔案、diff 與 commit 紀錄"},
@@ -265,11 +265,11 @@
   },
   "facts": [
     {"label": {"en": "Version", "zh": "版本"}, "value": {"en": "Unreleased", "zh": "未發行"}},
-    {"label": {"en": "Based on", "zh": "基礎"}, "value": "Paseo 0.10.0 · 53ee9cd"},
+    {"label": {"en": "Based on", "zh": "基礎"}, "value": "Paseo 0.11.0-beta.4 · cf2b3f4"},
     {"label": {"en": "License", "zh": "授權"}, "value": {"en": "Apache 2.0 · BAT UI MIT", "zh": "Apache 2.0 · BAT 介面 MIT"}},
     {"label": {"en": "Stack", "zh": "技術"}, "value": "TypeScript · Node · Tauri"},
     {"label": {"en": "Release gate", "zh": "發行關卡"}, "value": {"en": "1 of 7 accepted", "zh": "7 個通過 1 個"}},
-    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-10-01"}
+    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-10-05"}
   ],
   "links": [
     {"href": "https://github.com/getpaseo/paseo", "label": {"en": "Paseo by Mohamed Boudra", "zh": "Paseo（作者 Mohamed Boudra）"}},

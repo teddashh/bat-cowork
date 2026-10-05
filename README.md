@@ -10,7 +10,7 @@ Work in progress: the Better Agent Terminal (BAT) desktop UI on a daemon derived
 
 ## What this repository is
 
-A derivative of Paseo at commit `53ee9cd` (Paseo 0.10.0). Paseo's server, client, protocol, and CLI stay on their upstream paths. This repository adds:
+A derivative of Paseo at commit `cf2b3f4` (Paseo 0.11.0-beta.4). The fork started from `53ee9cd` (Paseo 0.10.0). Paseo's server, client, protocol, and CLI stay on their upstream paths. This repository adds:
 
 - `apps/bat-desktop`: the BAT renderer, imported from Better Agent Terminal at `41ea2b1`, plus a new Tauri crate with its own app id and no updater. The Tauri shell does not compile yet; a browser shell can read a local daemon.
 - `packages/cowork-core`: the task rules (one driver per task; viewers can comment and propose), the dispatch policy, and an inventory of Paseo's inbound messages.
@@ -45,7 +45,7 @@ Project notes: [BAT-COWORK.md](BAT-COWORK.md). Work package status and evidence:
 
 ## Upstream Paseo README
 
-Everything below is Paseo's own README from the `53ee9cd` snapshot. The only edit is punctuation: dashes in list items became colons. Its badges, downloads, and install steps describe upstream Paseo, not this repository.
+Everything below is Paseo's own README from commit `cf2b3f4`. The only edit is punctuation: dashes in list items became colons. Its badges, downloads, and install steps describe upstream Paseo, not this repository.
 
 <p align="center">
   <img src="packages/website/public/logo.svg" width="64" height="64" alt="Paseo logo">
@@ -78,7 +78,7 @@ Everything below is Paseo's own README from the `53ee9cd` snapshot. The only edi
   </a>
 </p>
 
-<p align="center">One interface for Claude Code, Codex, Copilot, OpenCode, and Pi agents.</p>
+<p align="center">One interface for Claude Code, Codex, Copilot, OpenCode, Pi, Antigravity, and Muse Code agents.</p>
 
 <p align="center">
   <img src="https://paseo.sh/hero-mockup.png" alt="Paseo app screenshot" width="100%">
@@ -91,7 +91,7 @@ Everything below is Paseo's own README from the `53ee9cd` snapshot. The only edi
 Run agents in parallel on your own machines. Ship from your phone or your desk.
 
 - **Self-hosted:** Agents run on your machine with your full dev environment. Use your tools, your configs, and your skills.
-- **Multi-provider:** Claude Code, Codex, Copilot, OpenCode, and Pi through the same interface. Pick the right model for each job.
+- **Multi-provider:** Claude Code, Codex, Copilot, OpenCode, Pi, Antigravity, and Muse Code through the same interface. Pick the right model for each job.
 - **Voice control:** Dictate tasks or talk through problems in voice mode. Hands-free when you need it.
 - **Cross-device:** iOS, Android, desktop, web, and CLI. Start work at your desk, check in from your phone, script it from the terminal.
 - **Privacy-first:** Paseo doesn't have any telemetry, tracking, or forced log-ins.
@@ -117,6 +117,8 @@ You need at least one agent CLI installed and configured with your credentials:
 - [GitHub Copilot](https://github.com/features/copilot/cli/)
 - [OpenCode](https://github.com/anomalyco/opencode)
 - [Pi](https://pi.dev)
+- [Antigravity](https://paseo.sh/docs/supported-providers#antigravity)
+- [Muse Code](https://paseo.sh/docs/muse-code)
 
 ### Desktop app (recommended)
 

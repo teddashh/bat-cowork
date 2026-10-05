@@ -3,7 +3,7 @@
 Server-first development workstation.
 
 - The desktop is the BAT Tauri / React workflow. The BAT renderer is imported into `apps/bat-desktop`, under a new Tauri crate with its own app id (see `apps/bat-desktop/README.md`).
-- The daemon is this Paseo tree, locked at `53ee9cd9930d9479af318c1ed29713a0bfb5f47b`.
+- The daemon is this Paseo tree, locked at `cf2b3f4bb31c8f6041b156d9da54c06fea12c86f` (Paseo 0.11.0-beta.4). The previous lock was `53ee9cd9930d9479af318c1ed29713a0bfb5f47b`.
 - Task rules run in the daemon process: `packages/cowork-core`, bundled into `packages/server/src/server/cowork/reducer.js`. There is no second Python task daemon.
 
 This repository is not an official Paseo or Better Agent Terminal build.
