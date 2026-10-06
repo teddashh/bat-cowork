@@ -5,7 +5,7 @@
   "mark": "BC",
   "palette": "lime",
   "default_branch": "main",
-  "verified": "2026-10-05",
+  "verified": "2026-10-06",
   "language": "TypeScript",
   "license": {
     "label": {"en": "License", "zh": "授權"},
@@ -269,12 +269,521 @@
     {"label": {"en": "License", "zh": "授權"}, "value": {"en": "Apache 2.0 · BAT UI MIT", "zh": "Apache 2.0 · BAT 介面 MIT"}},
     {"label": {"en": "Stack", "zh": "技術"}, "value": "TypeScript · Node · Tauri"},
     {"label": {"en": "Release gate", "zh": "發行關卡"}, "value": {"en": "1 of 7 accepted", "zh": "7 個通過 1 個"}},
-    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-10-05"}
+    {"label": {"en": "Verified", "zh": "查核日期"}, "value": "2026-10-06"}
   ],
   "links": [
     {"href": "https://github.com/getpaseo/paseo", "label": {"en": "Paseo by Mohamed Boudra", "zh": "Paseo（作者 Mohamed Boudra）"}},
     {"href": "https://github.com/tony1223/better-agent-terminal", "label": {"en": "Better Agent Terminal by TonyQ", "zh": "Better Agent Terminal（作者 TonyQ）"}},
     {"href": "https://github.com/teddashh/bat-cowork/blob/main/THIRD_PARTY_NOTICES.md", "label": {"en": "Third-party notices", "zh": "第三方聲明"}},
     {"href": "https://teddashh.github.io/bat-agent-connector/", "label": {"en": "Related: bat-agent-connector", "zh": "相關專案：bat-agent-connector"}}
+  ],
+  "flows": [
+    {
+      "id": "sits-on-daemon",
+      "after": "architecture",
+      "heading": {
+        "en": "Where the fork sits on Paseo",
+        "zh": "這個 fork 怎麼接上 Paseo"
+      },
+      "intro": {
+        "en": "The BAT desktop is a client. The Paseo daemon owns agents, worktrees, and the cowork rules.",
+        "zh": "BAT 桌面端是客戶端。agent、worktree 與協作規則都歸 Paseo daemon。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "core": 2
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "BAT UI",
+            "zh": "BAT 介面"
+          },
+          "note": {
+            "en": "The renderer is BAT's MIT UI at 41ea2b1, and the new Tauri shell has not compiled.",
+            "zh": "介面是 BAT 在 41ea2b1 的 MIT UI，新的 Tauri 殼還沒編譯成功。"
+          },
+          "tone": "neutral",
+          "icon": "window"
+        },
+        {
+          "title": {
+            "en": "Browser read",
+            "zh": "瀏覽器讀取"
+          },
+          "note": {
+            "en": "The browser shell can read workspaces, files, diff, and commits, but it has no create or send, and PTY calls throw.",
+            "zh": "瀏覽器殼可讀工作區、檔案、diff 與 commit，但沒有建立或送出，PTY 呼叫會丟出錯誤。"
+          },
+          "tone": "info",
+          "icon": "eye"
+        },
+        {
+          "title": {
+            "en": "Daemon",
+            "zh": "daemon"
+          },
+          "note": {
+            "en": "Cowork rules run in the Paseo process, wired through seven upstream files.",
+            "zh": "協作規則跑在 Paseo 行程裡，透過七個上游檔案接進來。"
+          },
+          "tone": "accent",
+          "icon": "hub"
+        },
+        {
+          "title": {
+            "en": "Not admitted",
+            "zh": "尚未獲准"
+          },
+          "note": {
+            "en": "Claude, Codex, and Grok are not admitted, and tests use a fake Claude client.",
+            "zh": "Claude、Codex 與 Grok 都未獲准，測試用的是假的 Claude 客戶端。"
+          },
+          "tone": "warn",
+          "icon": "cloud"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "Tauri shell does not compile",
+          "zh": "Tauri 殼還沒編譯"
+        },
+        {
+          "en": "PTY writes throw",
+          "zh": "PTY 寫入會丟錯"
+        },
+        {
+          "en": "no provider is admitted",
+          "zh": "沒有供應者獲准"
+        }
+      ],
+      "caption": {
+        "en": "bat-cowork keeps Paseo's server, client, protocol, and CLI on their upstream paths and adds the BAT renderer, cowork-core, and the daemon cowork folder. Seven upstream files wire that in: 237 lines added and one removed. The Tauri crate uses its own app id and has not compiled, so there is no desktop window. The browser shell can read a local daemon and has no create or send method. PTY calls throw. No provider is admitted for dispatch.",
+        "zh": "bat-cowork 把 Paseo 的 server、client、協定與 CLI 留在上游路徑，另外加上 BAT 的介面、cowork-core，以及 daemon 裡的 cowork 資料夾。這是透過七個上游檔案接進來的：新增 237 行，刪除 1 行。Tauri crate 用自己的 app id，而且還沒編譯成功，所以沒有桌面視窗。瀏覽器殼可以讀本機 daemon，沒有建立或送出的方法。PTY 呼叫會丟出錯誤。沒有供應者獲准派工。"
+      }
+    },
+    {
+      "id": "who-drives",
+      "after": "features",
+      "heading": {
+        "en": "Who may act on a task",
+        "zh": "誰可以對任務動手"
+      },
+      "intro": {
+        "en": "Viewers can comment. Control actions require the driver, and an instruction is not on the wire.",
+        "zh": "旁觀者可以留言。控制動作必須是主導者，而且線上訊息沒有指令這個動作。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "core": 1,
+        "boundaryAfter": 0
+      },
+      "zones": {
+        "en": [
+          "Viewer",
+          "Client id",
+          "Driver"
+        ],
+        "zh": [
+          "旁觀者",
+          "連線 id",
+          "主導者"
+        ]
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "Comment",
+            "zh": "留言提案"
+          },
+          "note": {
+            "en": "Append accepts a comment or a proposal, and the daemon stamps the connection client id.",
+            "zh": "附加訊息接受留言或提案，daemon 會蓋上這條連線的 client id。"
+          },
+          "tone": "neutral",
+          "icon": "chat"
+        },
+        {
+          "title": {
+            "en": "Driver",
+            "zh": "主導者"
+          },
+          "note": {
+            "en": "Pause, cancel, takeover, and release are rejected unless that client id is the driver.",
+            "zh": "暫停、取消、接手與放開，如果 client id 不是主導者，就會被拒絕。"
+          },
+          "tone": "accent",
+          "icon": "people"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "viewers can comment",
+          "zh": "旁觀者可以留言"
+        },
+        {
+          "en": "control needs the driver",
+          "zh": "控制要是主導者"
+        },
+        {
+          "en": "instruction is not accepted",
+          "zh": "不接受指令動作"
+        }
+      ],
+      "caption": {
+        "en": "cowork.tasks.append accepts comment, proposal, and control. The actor stored on the event is the session client id, not a name from the payload. Pause, cancel, takeover, and release are rejected when that id is not the driver. The message has no instruction action, nothing consumes a dispatch intent, and no client message calls openTask.",
+        "zh": "cowork.tasks.append 接受 comment、proposal 與 control。事件上記下的行為者是 session 的 client id，不是訊息內容裡的名字。暫停、取消、接手與放開，如果這個 id 不是主導者就會被拒絕。這個訊息沒有 instruction 動作，沒有人取用 dispatch intent，也沒有客戶端訊息會呼叫 openTask。"
+      }
+    },
+    {
+      "id": "send-gate",
+      "after": "features",
+      "heading": {
+        "en": "What the send gate refuses",
+        "zh": "送出關卡會拒絕什麼"
+      },
+      "intro": {
+        "en": "Two Paseo write messages call the gate for a managed target. The other 88 write messages do not.",
+        "zh": "兩種 Paseo 寫入訊息會對受管目標呼叫關卡。其餘 88 種寫入訊息不會。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "core": 3
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "Revision",
+            "zh": "修訂與世代"
+          },
+          "note": {
+            "en": "A stale revision or an old control epoch is refused.",
+            "zh": "過時的 revision，或舊的 control epoch，都會被拒絕。"
+          },
+          "tone": "neutral",
+          "icon": "clock"
+        },
+        {
+          "title": {
+            "en": "Writer",
+            "zh": "寫入者"
+          },
+          "note": {
+            "en": "The wrong writer, a paused task, or a takeover that has not settled is refused.",
+            "zh": "寫入者不對、任務暫停中，或接手還沒收尾，都會被拒絕。"
+          },
+          "tone": "warn",
+          "icon": "lock"
+        },
+        {
+          "title": {
+            "en": "Same id",
+            "zh": "重複指令"
+          },
+          "note": {
+            "en": "A command id that was already dispatched does not start a second turn.",
+            "zh": "已經派過的 command id 不會再開第二輪。"
+          },
+          "tone": "info",
+          "icon": "shield"
+        },
+        {
+          "title": {
+            "en": "Send gate",
+            "zh": "送出關卡"
+          },
+          "note": {
+            "en": "Only send and create call this gate, and an unmanaged target keeps the stock Paseo path.",
+            "zh": "只有送出與建立會呼叫這個關卡，未受管的目標仍走 Paseo 原本的路徑。"
+          },
+          "tone": "accent",
+          "icon": "gear"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "stale revision is refused",
+          "zh": "過時的 revision 會拒絕"
+        },
+        {
+          "en": "duplicate id does not rerun",
+          "zh": "重複 id 不會再跑"
+        },
+        {
+          "en": "88 writes are not wired",
+          "zh": "88 種寫入還沒接上"
+        }
+      ],
+      "caption": {
+        "en": "authorizeCoworkWrite runs for send_agent_message_request and create_agent_request. A managed target is refused when the revision or control epoch is stale, dispatch is held, the actor is not the writer, or the command id was already used. If the target is not registered, the call is allowed and the stock Paseo path continues. Of the 90 inbound write messages at this Paseo revision, the other 88 never call the gate.",
+        "zh": "authorizeCoworkWrite 會在 send_agent_message_request 與 create_agent_request 執行。受管目標如果 revision 或 control epoch 過時、派工被暫停、行為者不是寫入者，或 command id 已經用過，就會拒絕。目標沒有註冊時，這次呼叫會放行，並繼續走 Paseo 原本的路徑。這個 Paseo 版本的 90 種寫入訊息裡，其餘 88 種不會呼叫這個關卡。"
+      }
+    },
+    {
+      "id": "journal-cycle",
+      "after": "architecture",
+      "heading": {
+        "en": "How the task journal survives a restart",
+        "zh": "任務帳本怎麼熬過重啟"
+      },
+      "intro": {
+        "en": "The file under the daemon home is what the next process restores. An in-flight command is not sent again.",
+        "zh": "daemon home 裡的檔案，就是下一個行程還原的內容。還在執行的指令不會再送一次。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "core": 1,
+        "loop": true
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "Task event",
+            "zh": "任務事件"
+          },
+          "note": {
+            "en": "Writes are queued in call order so an older snapshot cannot land after a newer one.",
+            "zh": "寫入依呼叫順序排隊，較舊的快照不會蓋掉較新的。"
+          },
+          "tone": "neutral",
+          "icon": "doc"
+        },
+        {
+          "title": {
+            "en": "Rename file",
+            "zh": "改名寫入"
+          },
+          "note": {
+            "en": "The new body is synced to a temp file beside tasks.json, then renamed over it.",
+            "zh": "新內容先同步寫到 tasks.json 旁邊的暫存檔，再改名蓋過去。"
+          },
+          "tone": "accent",
+          "icon": "database"
+        },
+        {
+          "title": {
+            "en": "Read back",
+            "zh": "重啟讀回"
+          },
+          "note": {
+            "en": "On the next start, an in-flight command is marked unknown and is not sent again.",
+            "zh": "下次啟動時，還在執行的指令會標成 unknown，而且不會再送一次。"
+          },
+          "tone": "info",
+          "icon": "clock"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "temp file is synced first",
+          "zh": "先把暫存檔同步"
+        },
+        {
+          "en": "rename replaces the journal",
+          "zh": "改名後才換掉帳本"
+        },
+        {
+          "en": "inflight is not resent",
+          "zh": "執行中的不會重送"
+        }
+      ],
+      "caption": {
+        "en": "The journal is cowork/tasks.json under the daemon home. Each save writes a temp file in that directory, syncs it, and renames it over the journal, so a crash leaves the old file or the new one. On startup, a command still marked in flight becomes unknown, dispatch is held, and the command is not sent again until the driver acknowledges it. The return rail is that later start reading the same file.",
+        "zh": "帳本是 daemon home 下的 cowork/tasks.json。每次儲存都先把暫存檔寫在同一層、同步到磁碟，再改名蓋過帳本，所以中途當掉時留下的是舊檔或新檔。啟動時，仍標成執行中的指令會變成 unknown，派工先暫停，而且在主導者確認之前不會再送。圖上的回路是下一次啟動讀回同一個檔案。"
+      }
+    },
+    {
+      "id": "providers-closed",
+      "after": "decisions",
+      "heading": {
+        "en": "Why dispatch does not start a provider",
+        "zh": "為什麼派工不會啟動供應者"
+      },
+      "intro": {
+        "en": "A catalog row or an adapter directory is not permission to run a provider. Every provider stays closed.",
+        "zh": "目錄裡有一列，或磁碟上有 adapter，都不代表可以跑那個供應者。每一家都還關著。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        "core": 1,
+        "lanes": [
+          "Claude",
+          "Codex",
+          "Grok"
+        ]
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "Admit check",
+            "zh": "准入檢查"
+          },
+          "note": {
+            "en": "assertProviderAdmitted throws for Claude, Codex, Grok, and Antigravity.",
+            "zh": "assertProviderAdmitted 對 Claude、Codex、Grok 與 Antigravity 都會丟出錯誤。"
+          },
+          "tone": "warn",
+          "icon": "shield"
+        },
+        {
+          "title": {
+            "en": "Test fake",
+            "zh": "測試替身"
+          },
+          "note": {
+            "en": "Turns in the cowork tests come from an in-process fake Claude client.",
+            "zh": "協作測試裡的回合來自行程內的假 Claude 客戶端。"
+          },
+          "tone": "accent",
+          "icon": "terminal"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "no provider is admitted",
+          "zh": "沒有供應者獲准"
+        },
+        {
+          "en": "catalog is not permission",
+          "zh": "目錄不是許可"
+        },
+        {
+          "en": "tests use a fake client",
+          "zh": "測試用假的客戶端"
+        }
+      ],
+      "caption": {
+        "en": "cowork-core records Claude and Codex as adapter directories, Grok as an ACP catalog command, and Antigravity as not an agent provider. admittedForDispatch is false on every row. assertProviderAdmitted throws before a dispatch. The lanes stay unselected because none of them can be chosen. Test turns use an in-process fake Claude client.",
+        "zh": "cowork-core 把 Claude 與 Codex 記成 adapter 目錄，把 Grok 記成 ACP 目錄裡的指令，把 Antigravity 記成不是 agent 供應者。每一列的 admittedForDispatch 都是 false。派工前 assertProviderAdmitted 會丟出錯誤。圖上的路線都沒有被選中，因為沒有任何一家可以選。測試回合用的是行程內的假 Claude 客戶端。"
+      }
+    },
+    {
+      "id": "verify-head",
+      "after": "features",
+      "heading": {
+        "en": "When a finished turn counts as verified",
+        "zh": "做完的回合何時算驗證過"
+      },
+      "intro": {
+        "en": "Verification looks at git, not at a test result. The repair intent is recorded and not sent.",
+        "zh": "驗證看的是 git，不是測試結果。修復意圖會被記下來，但不會送出。"
+      },
+      "spec": {
+        "columns": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "core": 1
+      },
+      "steps": [
+        {
+          "title": {
+            "en": "Turn ends",
+            "zh": "回合結束"
+          },
+          "note": {
+            "en": "settleCoworkTurn runs after a managed foreground turn, and it skips a paused or finished task.",
+            "zh": "受管的前景回合結束後會跑 settleCoworkTurn，暫停中或已結束的任務會跳過。"
+          },
+          "tone": "neutral",
+          "icon": "check"
+        },
+        {
+          "title": {
+            "en": "Check HEAD",
+            "zh": "檢查 HEAD"
+          },
+          "note": {
+            "en": "The task is verified only when HEAD moved past the last evidence commit and the tree is clean.",
+            "zh": "只有 HEAD 越過上一個證據 commit，而且工作樹是乾淨的，任務才算驗證過。"
+          },
+          "tone": "accent",
+          "icon": "search"
+        },
+        {
+          "title": {
+            "en": "Record it",
+            "zh": "記下結果"
+          },
+          "note": {
+            "en": "A pass stores the commit, the next failure after two counted attempts becomes a blocker, and the repair is not sent.",
+            "zh": "通過會記下 commit，兩次嘗試都算過之後的下一次失敗會變成卡關，修復不會送出。"
+          },
+          "tone": "warn",
+          "icon": "bell"
+        }
+      ],
+      "ticks": [
+        {
+          "en": "HEAD must move",
+          "zh": "HEAD 必須往前"
+        },
+        {
+          "en": "the tree must be clean",
+          "zh": "工作樹必須乾淨"
+        },
+        {
+          "en": "repair intent is not sent",
+          "zh": "修復意圖不會送出"
+        }
+      ],
+      "caption": {
+        "en": "When a managed foreground turn finishes, settleCoworkTurn calls verifyTask unless the task is paused or already terminal. The check passes only when HEAD differs from the last evidence commit, or from the baseline commit if there is no evidence yet, and git status is clean. A pass records that commit. Failures increment rework, the default cap is two, and the following failure becomes a blocker. No test result is an input, and the repair intent returned with the failure is not dispatched.",
+        "zh": "受管的前景回合結束時，只要任務不是暫停中或已經結束，settleCoworkTurn 就會呼叫 verifyTask。只有 HEAD 和上一個證據 commit 不同（還沒有證據時則和基準 commit 不同），而且 git status 是乾淨的，才算通過。通過會記下那個 commit。失敗會增加重做次數，預設上限是兩次，再下一次失敗就變成卡關。測試結果不是輸入，失敗時帶回的修復意圖也不會被派出去。"
+      }
+    }
   ]
 }
